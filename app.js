@@ -589,7 +589,6 @@ const translations = {
     "nav-reviews": "Google Yorumları (4.8 ★)",
     "nav-contact": "İletişim",
     
-    "hero-sub": "Etimesgut & Çevresi Gayrimenkul ve Yatırım Danışmanlığı",
     "hero-title-1": "Güvenilir, Şeffaf ve",
     "hero-title-2": "Doğru Yatırımın Adresi",
     "hero-desc": "İlhan Kurt ve Adem Gürsoy güvencesiyle; Etimesgut, Bağlıca, Eryaman ve tüm Ankara aksında satılık ve kiralık konut, ticari mülk ve yatırımlık arsalarda dürüst esnaflık ve profesyonel danışmanlık.",
@@ -646,7 +645,6 @@ const translations = {
     "nav-reviews": "Google Reviews (4.8 ★)",
     "nav-contact": "Contact",
     
-    "hero-sub": "Etimesgut & Ankara Real Estate and Investment Advisory",
     "hero-title-1": "Trusted, Transparent and",
     "hero-title-2": "The Right Investment Address",
     "hero-desc": "Under the assurance of İlhan Kurt and Adem Gürsoy; providing honest, reliable and professional real estate solutions for residential, commercial and land investments in Etimesgut, Baglica, and Eryaman.",

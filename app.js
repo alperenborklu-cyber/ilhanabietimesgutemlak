@@ -175,9 +175,8 @@ function initRouter() {
       }
     }
 
-    if (pageId === 'home') {
-      resetStats();
-      setTimeout(animateStats, 200);
+    if (pageId === 'home' && !statsAnimated) {
+      setTimeout(animateStats, 300);
     }
   }
 }
@@ -682,8 +681,8 @@ const translations = {
     "hero-btn-2": "Bize Ulaşın",
     
     "stat-reviews-lbl": "Google Müşteri Yorumu (4.8 ★)",
-    "stat-experience-lbl": "Yıllık Bölge Uzmanlığı",
-    "stat-deals-lbl": "Başarılı Alım-Satım & Kiralama",
+    "stat-experience-lbl": "Yıllık Bölge Deneyimi",
+    "stat-deals-lbl": "Başarılı İşlem & Portföy",
     "stat-trust-lbl": "Şeffaflık & Müşteri Memnuniyeti",
     
     "sectors-sub": "Uzmanlık Alanlarımız",

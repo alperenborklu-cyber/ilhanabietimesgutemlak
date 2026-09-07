@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zeugma Holding - Geleceği İnşa Ediyoruz</title>
+  <meta name="description" content="Zeugma Holding; ulaştırma, altyapı, enerji, gayrimenkul ve sürdürülebilir çevre projeleriyle geleceği inşa eden lider inşaat grubudur.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 1. PRELOADER -->
+  <div id="preloader">
+    <div class="loader-logo">Zeugma<span>Holding</span></div>
+    <div class="loader-bar-bg">
+      <div class="loader-bar"></div>
+    </div>
+    <div class="loader-counter">0%</div>
+  </div>
+
+  <!-- 2. STICKY HEADER -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo" data-target="home">
+        Zeugma<span>Holding</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#" data-target="corporate" data-i18n="nav-corporate">Kurumsal</a></li>
+        <li><a href="#" data-target="sectors" data-i18n="nav-sectors">Faaliyet Alanları</a></li>
+        <li><a href="#" data-target="projects" data-i18n="nav-projects">Projeler</a></li>
+        <li><a href="#" data-target="career" data-i18n="nav-career">Kariyer</a></li>
+        <li><a href="#" data-target="contact" data-i18n="nav-contact">İletişim</a></li>
+      </ul>
+      <div class="header-right">
+        <div class="lang-selector" id="lang-switch">EN</div>
+        <div class="burger">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 3. MAIN CONTAINER (SPA) -->
+  <main id="app-content">
+
+    <!-- ==================== ANASAYFA (HOME) ==================== -->
+    <section id="home" class="page-view fade-in-section" style="display: block;">
+      
+      <!-- HERO -->
+      <div class="hero">
+        <video autoplay muted loop playsinline class="hero-video-bg">
+          <source src="ss.mp4" type="video/mp4">
+        </video>
+        <div class="hero-bg"></div>
+        <div class="hero-canvas-bg" id="blueprint-canvas"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-text">
+            <span class="section-subtitle" data-i18n="hero-sub">Küresel Altyapı ve Mühendislik Grubu</span>
+            <h1><span data-i18n="hero-title-1">Sınırları Aşan</span><br><span data-i18n="hero-title-2">Büyük Projeler</span></h1>
+            <p data-i18n="hero-desc">Ulaştırma, yenilenebilir enerji, mega altyapı ve sürdürülebilir üstyapı çözümleriyle dünya standartlarında mühendislik üretiyoruz.</p>
+            <div class="hero-cta">
+              <a href="#" data-target="projects" class="btn btn-primary" data-i18n="hero-btn-1">Projelerimizi İnceleyin</a>
+              <a href="#" data-target="corporate" class="btn btn-secondary" data-i18n="hero-btn-2">Biz Kimiz?</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD / STATS -->
+      <div class="dashboard-band">
+        <div class="section-container">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-number" data-val="45000" data-suffix="+">0+</div>
+              <div class="stat-label" data-i18n="stat-employees-lbl">Çalışan Sayısı</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" data-val="18" data-suffix="">0</div>
+              <div class="stat-label" data-i18n="stat-countries-lbl">Aktif Ülke</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" data-val="52" data-suffix=" Mrd €">0 Mrd €</div>
+              <div class="stat-label" data-i18n="stat-ciro-lbl">Yıllık Ciro</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" data-val="38" data-suffix=".">0.</div>
+              <div class="stat-label" data-i18n="stat-enr-lbl">ENR Dünya Sıralaması</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTORS SHOWCASE -->
+      <div class="sectors-section">
+        <div class="section-container">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="section-subtitle" data-i18n="sectors-sub">Uzmanlık Alanlarımız</span>
+              <h2 data-i18n="sectors-title">Faaliyet Sektörleri</h2>
+            </div>
+            <a href="#" data-target="sectors" class="btn btn-secondary" data-i18n="sectors-btn">Tüm Sektörler</a>
+          </div>
+          <div class="sectors-grid">
+            <div class="sector-card" data-target="sectors">
+              <div class="sector-img" style="background-image: url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80');"></div>
+              <div class="sector-overlay"></div>
+              <div class="sector-content">
+                <div class="sector-icon">✈</div>
+                <h3 data-i18n="sec1-title">Ulaşım & Altyapı</h3>
+                <p data-i18n="sec1-desc">Otoyollar, viyadükler, raylı sistemler, havalimanları ve derin deniz limanlarıyla küresel ulaşım ağları inşa ediyoruz.</p>
+              </div>
+            </div>
+            <div class="sector-card" data-target="sectors">
+              <div class="sector-img" style="background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80');"></div>
+              <div class="sector-overlay"></div>
+              <div class="sector-content">
+                <div class="sector-icon">⚡</div>
+                <h3 data-i18n="sec2-title">Endüstri & Enerji</h3>
+                <p data-i18n="sec2-desc">Rüzgar, hidroelektrik, jeotermal tesisler ve modern endüstriyel üretim kompleksleriyle sürdürülebilir geleceği besliyoruz.</p>
+              </div>
+            </div>
+            <div class="sector-card" data-target="sectors">
+              <div class="sector-img" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80');"></div>
+              <div class="sector-overlay"></div>
+              <div class="sector-content">
+                <div class="sector-icon">🏢</div>
+                <h3 data-i18n="sec3-title">Gayrimenkul & Üstyapı</h3>
+                <p data-i18n="sec3-desc">Akıllı şehir hastaneleri, yeşil bina sertifikalı konutlar ve yüksek teknolojili ticari merkezler geliştiriyoruz.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURED PROJECTS -->
+      <div class="projects-section">
+        <div class="section-container">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="section-subtitle" data-i18n="proj-sub">Mühendislik Harikalarımız</span>
+              <h2 data-i18n="proj-title">Öne Çıkan Projeler</h2>
+            </div>
+            <a href="#" data-target="projects" class="btn btn-secondary" data-i18n="proj-btn">Tümünü İncele</a>
+          </div>
+          <div class="projects-grid">
+            <div class="project-card" data-id="p1">
+              <div class="project-card-img">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" alt="Avrasya Mega Tüneli">
+                <span class="project-badge" data-i18n="filter-completed">Tamamlandı</span>
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="sec1-title">Ulaşım & Altyapı</div>
+                <h3 class="project-card-title" data-i18n="p1-title">Avrasya Mega Tüneli</h3>
+                <p class="project-card-desc" data-i18n="p1-desc">İki kıtayı deniz altından birleştiren, depreme dayanıklı çift katlı mega tünel geçişi.</p>
+              </div>
+            </div>
+            <div class="project-card" data-id="p2">
+              <div class="project-card-img">
+                <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=800&q=80" alt="Gordion Rüzgar Enerjisi">
+                <span class="project-badge" data-i18n="filter-completed">Tamamlandı</span>
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="sec2-title">Endüstri & Enerji</div>
+                <h3 class="project-card-title" data-i18n="p2-title">Gordion Rüzgar Enerjisi Santrali</h3>
+                <p class="project-card-desc" data-i18n="p2-desc">120 MW kurulu güce sahip, 80 türbinli dev yenilenebilir enerji yatırımı.</p>
+              </div>
+            </div>
+            <div class="project-card" data-id="p3">
+              <div class="project-card-img">
+                <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=800&q=80" alt="Ege Port Liman">
+                <span class="project-badge" data-i18n="filter-ongoing">Devam Ediyor</span>
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="sec1-title">Ulaşım & Altyapı</div>
+                <h3 class="project-card-title" data-i18n="p3-title">Ege Port Liman Genişletmesi</h3>
+                <p class="project-card-desc" data-i18n="p3-desc">Lojistik kapasiteyi 3 katına çıkaracak derin deniz rıhtımları ve dolgu sahası yapımı.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== KURUMSAL (CORPORATE) ==================== -->
+    <section id="corporate" class="page-view fade-in-section" style="display: none;">
+      
+      <!-- ABOUT & PHILOSOPHY -->
+      <div class="sectors-section">
+        <div class="section-container">
+          <div class="section-title">
+            <span class="section-subtitle" data-i18n="corp-sub">Köklü Geçmiş, Güçlü Gelecek</span>
+            <h2 data-i18n="corp-title">Kurumsal Profilimiz</h2>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; align-items: center;">
+            <div>
+              <p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="corp-p1">
+                Zeugma Holding, 1982 yılında başladığı mühendislik yolculuğunda bugün 18 ülkede faaliyet gösteren, ENR dünyanın en büyük müteahhitleri listesinde 38. sırada yer alan küresel bir güçtür.
+              </p>
+              <p style="color: var(--text-secondary); margin-bottom: 2rem;" data-i18n="corp-p2">
+                İsmini iki medeniyeti birbirine bağlayan tarihi antik kentten alan grubumuz, tıpkı ismi gibi kıtaları, toplumları ve gelecek hayallerini sağlam köprülerle birbirine bağlamayı ilke edinmiştir. Çevreye saygı, iş güvenliği ve sürdürülebilirlik ilkelerimiz doğrultusunda, yarının medeniyetlerini inşa ediyoruz.
+              </p>
+              <div style="display: flex; gap: 3rem;">
+                <div>
+                  <h4 style="color: var(--accent-gold); font-size: 2rem; font-family: var(--font-title); font-weight: 700;">1982</h4>
+                  <span style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);" data-i18n="corp-year-lbl">Kuruluş Yılı</span>
+                </div>
+                <div>
+                  <h4 style="color: var(--accent-gold); font-size: 2rem; font-family: var(--font-title); font-weight: 700;">180+</h4>
+                  <span style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);" data-i18n="corp-proj-lbl">Tamamlanan Proje</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80" alt="Hakkımızda Görseli" style="width:100%; border-radius:8px; border:1px solid var(--glass-border); box-shadow:var(--shadow-lg);">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOARD OF DIRECTORS -->
+      <div class="projects-section">
+        <div class="section-container">
+          <div class="section-title">
+            <span class="section-subtitle" data-i18n="board-sub">Yönetim Kadromuz</span>
+            <h2 data-i18n="board-title">Yönetim Kurulu</h2>
+          </div>
+          <div class="projects-grid" style="margin-top: 3rem;">
+            <!-- Director 1 -->
+            <div class="project-card" style="cursor: default;">
+              <div class="project-card-img" style="height: 320px;">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80" alt="Ahmet Zeugma" style="object-position: top;">
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="dir1-role">Kurucu & Yönetim Kurulu Başkanı</div>
+                <h3 class="project-card-title" data-i18n="dir1-name">Ahmet Zeugma</h3>
+                <p class="project-card-desc" data-i18n="dir1-desc">İnşaat yüksek mühendisi olan kurucumuz, 40 yılı aşkın süredir gruba vizyoner liderlik yapmaktadır.</p>
+              </div>
+            </div>
+            <!-- Director 2 -->
+            <div class="project-card" style="cursor: default;">
+              <div class="project-card-img" style="height: 320px;">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80" alt="Elif Zeugma Kaya" style="object-position: top;">
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="dir2-role">Yönetim Kurulu Başkan Vekili</div>
+                <h3 class="project-card-title" data-i18n="dir2-name">Elif Zeugma Kaya</h3>
+                <p class="project-card-desc" data-i18n="dir2-desc">Yatırım ve uluslararası finans yönetiminden sorumlu başkan vekilimiz, holdingin küresel genişlemesini yönetmektedir.</p>
+              </div>
+            </div>
+            <!-- Director 3 -->
+            <div class="project-card" style="cursor: default;">
+              <div class="project-card-img" style="height: 320px;">
+                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=800&q=80" alt="Dr. Can Demir" style="object-position: top;">
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="dir3-role">Yönetim Kurulu Üyesi & CEO</div>
+                <h3 class="project-card-title" data-i18n="dir3-name">Dr. Can Demir</h3>
+                <p class="project-card-desc" data-i18n="dir3-desc">Enerji ve altyapı sektörlerinde 25 yıllık operasyon tecrübesine sahip CEO'muz, holdingin günlük yönetiminden sorumludur.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORICAL TIMELINE -->
+      <div class="timeline-section">
+        <div class="section-container">
+          <div class="section-title" style="text-align: center;">
+            <span class="section-subtitle" data-i18n="time-sub">Tarihe Kazınan Anlar</span>
+            <h2 data-i18n="time-title">Başarı Kilometre Taşlarımız</h2>
+          </div>
+          <div class="timeline-container">
+            <div class="timeline-item left">
+              <div class="timeline-content">
+                <div class="timeline-year">1982</div>
+                <h3 class="timeline-title" data-i18n="time-item-1-title">İlk Temeller</h3>
+                <p class="timeline-desc" data-i18n="time-item-1-desc">Zeugma İnşaat Ltd. Şti. Ankara'da kuruldu ve ilk altyapı ve kanalizasyon taahhüt projelerine başladı.</p>
+              </div>
+            </div>
+            <div class="timeline-item right">
+              <div class="timeline-content">
+                <div class="timeline-year">1995</div>
+                <h3 class="timeline-title" data-i18n="time-item-2-title">Endüstriyel Hamle</h3>
+                <p class="timeline-desc" data-i18n="time-item-2-desc">Holding, ilk baraj ve enerji santrali projesini başarıyla tamamlayarak enerji taahhüt sektörüne girdi.</p>
+              </div>
+            </div>
+            <div class="timeline-item left">
+              <div class="timeline-content">
+                <div class="timeline-year">2008</div>
+                <h3 class="timeline-title" data-i18n="time-item-3-title">Uluslararası Açılım</h3>
+                <p class="timeline-desc" data-i18n="time-item-3-desc">Orta Doğu ve Doğu Avrupa'da eş zamanlı havalimanı ve karayolu projeleri üstlenilerek küresel marka olma adımı atıldı.</p>
+              </div>
+            </div>
+            <div class="timeline-item right">
+              <div class="timeline-content">
+                <div class="timeline-year">2020</div>
+                <h3 class="timeline-title" data-i18n="time-item-4-title">Sürdürülebilir Enerji Liderliği</h3>
+                <p class="timeline-desc" data-i18n="time-item-4-desc">Yenilenebilir enerji kurulu gücümüz 500 MW seviyesine ulaştı ve karbon-nötr yeşil şantiyeler konsepti hayata geçirildi.</p>
+              </div>
+            </div>
+            <div class="timeline-item left">
+              <div class="timeline-content">
+                <div class="timeline-year">2026</div>
+                <h3 class="timeline-title" data-i18n="time-item-5-title">ENR #38</h3>
+                <p class="timeline-desc" data-i18n="time-item-5-desc">Uluslararası müteahhitler listesinde 38. sıraya yükselen holdingimiz, 18 ülkede 45.000 çalışanla geleceği inşa etmeye devam ediyor.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== FAALİYET ALANLARI (SECTORS) ==================== -->
+    <section id="sectors" class="page-view fade-in-section" style="display: none;">
+      
+      <div class="sectors-section">
+        <div class="section-container">
+          <div class="section-title">
+            <span class="section-subtitle" data-i18n="sectors-page-sub">Operasyonel Çeşitlilik</span>
+            <h2 data-i18n="sectors-page-title">Faaliyet Alanlarımız</h2>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6rem; margin-top: 4rem;">
+            
+            <!-- Sector 1 Detail -->
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: center;">
+              <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80" alt="Ulaşım Altyapı" style="width: 100%; border-radius: 8px; border: 1px solid var(--glass-border); height: 350px; object-fit: cover;">
+              <div>
+                <h3 style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem; text-transform: uppercase;" data-i18n="sectors-sec1-lbl">Ulaşım & Altyapı</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="sectors-sec1-p">
+                  Zeugma Holding, ulaştırma altyapısı konusunda dünya çapında uzmanlaşmıştır. Şehirleri birbirine bağlayan tüneller, kıtaları aşan köprüler, yüksek hızlı demiryolu ağları ve en modern terminal tasarımlarına sahip havalimanı projeleri imza işlerimiz arasındadır.
+                </p>
+                <ul style="list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; color: var(--text-secondary);">
+                  <li data-i18n="sectors-sec1-item-1">✓ Yüksek Hızlı Tren & Metro Hatları</li>
+                  <li data-i18n="sectors-sec1-item-2">✓ Mega Tünel ve Köprü Geçişleri</li>
+                  <li data-i18n="sectors-sec1-item-3">✓ Havalimanı Terminal Kompleksleri</li>
+                  <li data-i18n="sectors-sec1-item-4">✓ Derin Deniz Konteyner Limanları</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Sector 2 Detail -->
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center;">
+              <div>
+                <h3 style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem; text-transform: uppercase;" data-i18n="sectors-sec2-lbl">Endüstri & Enerji</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="sectors-sec2-p">
+                  Enerji arzının güvenliğini yenilenebilir ve temiz kaynaklardan sağlamayı taahhüt ediyoruz. Rüzgar, hidroelektrik, güneş ve biyokütle enerjisi santrallerinin yanı sıra, petrokimya tesisleri, çimento fabrikaları ve entegre sanayi tesisleri mühendisliğinde öncüyüz.
+                </p>
+                <ul style="list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; color: var(--text-secondary);">
+                  <li data-i18n="sectors-sec2-item-1">✓ Rüzgar & Güneş Santralleri (GES/RES)</li>
+                  <li data-i18n="sectors-sec2-item-2">✓ Hidroelektrik Barajlar (HES)</li>
+                  <li data-i18n="sectors-sec2-item-3">✓ Atık Isı Geri Kazanım Sistemleri</li>
+                  <li data-i18n="sectors-sec2-item-4">✓ Petrokimya & Rafineri Tesisleri</li>
+                </ul>
+              </div>
+              <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80" alt="Endüstri Enerji" style="width: 100%; border-radius: 8px; border: 1px solid var(--glass-border); height: 350px; object-fit: cover;">
+            </div>
+
+            <!-- Sector 3 Detail -->
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: center;">
+              <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Gayrimenkul Üstyapı" style="width: 100%; border-radius: 8px; border: 1px solid var(--glass-border); height: 350px; object-fit: cover;">
+              <div>
+                <h3 style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem; text-transform: uppercase;" data-i18n="sectors-sec3-lbl">Gayrimenkul & Üstyapı</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;" data-i18n="sectors-sec3-p">
+                  Toplumların yaşam kalitesini artıracak akıllı yapılar tasarlıyoruz. Kamu-Özel İş Birliği (KÖİ) modelleriyle inşa edilen tam teşekküllü şehir hastaneleri, lüks yaşam rezidansları, beş yıldızlı turizm otelleri ve iş dünyasının kalbi olan ofis kuleleri bu alandaki odak noktalarımızdır.
+                </p>
+                <ul style="list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; color: var(--text-secondary);">
+                  <li data-i18n="sectors-sec3-item-1">✓ Entegre Sağlık Kampüsleri (Şehir Hastaneleri)</li>
+                  <li data-i18n="sectors-sec3-item-2">✓ LEED Sertifikalı Akıllı Rezidanslar</li>
+                  <li data-i18n="sectors-sec3-item-3">✓ Lüks Otel ve Kongre Merkezleri</li>
+                  <li data-i18n="sectors-sec3-item-4">✓ Ticari İş & Alışveriş Merkezleri</li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== PROJELER (PROJECTS) ==================== -->
+    <section id="projects" class="page-view fade-in-section" style="display: none;">
+      
+      <div class="projects-section">
+        <div class="section-container">
+          <div class="section-title">
+            <span class="section-subtitle" data-i18n="projects-page-sub">Üstün Mühendislik Portföyümüz</span>
+            <h2 data-i18n="projects-page-title">Projelerimiz</h2>
+          </div>
+          
+          <!-- FILTERS -->
+          <div class="gallery-filters" style="margin-top: 3rem;">
+            <button class="filter-btn active" data-filter="all" data-i18n="filter-all">Tümü</button>
+            <button class="filter-btn" data-filter="ULAŞIM & ALTYAPI" data-i18n="filter-transport">Ulaşım & Altyapı</button>
+            <button class="filter-btn" data-filter="ENDÜSTRİ & ENERJİ" data-i18n="filter-energy">Endüstri & Enerji</button>
+            <button class="filter-btn" data-filter="GAYRİMENKUL & ÜSTYAPı" data-i18n="filter-building">Gayrimenkul & Üstyapı</button>
+            <button class="filter-btn" data-filter="Tamamlandı" data-i18n="filter-completed">Tamamlananlar</button>
+            <button class="filter-btn" data-filter="Devam Ediyor" data-i18n="filter-ongoing">Devam Edenler</button>
+          </div>
+
+          <!-- GRID -->
+          <div class="projects-grid">
+            <!-- Project 1 -->
+            <div class="project-card" data-category="ULAŞIM & ALTYAPI" data-status="Tamamlandı" data-id="p1">
+              <div class="project-card-img">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" alt="Avrasya Mega Tüneli">
+                <span class="project-badge" data-i18n="filter-completed">Tamamlandı</span>
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="sec1-title">Ulaşım & Altyapı</div>
+                <h3 class="project-card-title" data-i18n="p1-title">Avrasya Mega Tüneli</h3>
+                <p class="project-card-desc" data-i18n="p1-desc">İki kıtayı deniz altından birleştiren, depreme dayanıklı çift katlı mega tünel geçişi.</p>
+              </div>
+            </div>
+            <!-- Project 2 -->
+            <div class="project-card" data-category="ENDÜSTRİ & ENERJİ" data-status="Tamamlandı" data-id="p2">
+              <div class="project-card-img">
+                <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=800&q=80" alt="Gordion Rüzgar Enerjisi">
+                <span class="project-badge" data-i18n="filter-completed">Tamamlandı</span>
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="sec2-title">Endüstri & Enerji</div>
+                <h3 class="project-card-title" data-i18n="p2-title">Gordion Rüzgar Enerjisi Santrali</h3>
+                <p class="project-card-desc" data-i18n="p2-desc">120 MW kurulu güce sahip, 80 türbinli dev yenilenebilir enerji yatırımı.</p>
+              </div>
+            </div>
+            <!-- Project 3 -->
+            <div class="project-card" data-category="ULAŞIM & ALTYAPI" data-status="Devam Ediyor" data-id="p3">
+              <div class="project-card-img">
+                <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=800&q=80" alt="Ege Port Liman">
+                <span class="project-badge" data-i18n="filter-ongoing">Devam Ediyor</span>
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="sec1-title">Ulaşım & Altyapı</div>
+                <h3 class="project-card-title" data-i18n="p3-title">Ege Port Liman Genişletmesi</h3>
+                <p class="project-card-desc" data-i18n="p3-desc">Lojistik kapasiteyi 3 katına çıkaracak derin deniz rıhtımları ve dolgu sahası yapımı.</p>
+              </div>
+            </div>
+            <!-- Project 4 -->
+            <div class="project-card" data-category="GAYRİMENKUL & ÜSTYAPı" data-status="Devam Ediyor" data-id="p4">
+              <div class="project-card-img">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" alt="Alara Eko-Kule Konutları">
+                <span class="project-badge" data-i18n="filter-ongoing">Devam Ediyor</span>
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="sec3-title">Gayrimenkul & Üstyapı</div>
+                <h3 class="project-card-title" data-i18n="p4-title">Alara Eko-Kule Konutları</h3>
+                <p class="project-card-desc" data-i18n="p4-desc">LEED Platin sertifikalı, kendi enerjisini üreten 42 katlı akıllı rezidans kulesi.</p>
+              </div>
+            </div>
+            <!-- Project 5 -->
+            <div class="project-card" data-category="ENDÜSTRİ & ENERJİ" data-status="Tamamlandı" data-id="p5">
+              <div class="project-card-img">
+                <img src="https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=800&q=80" alt="Yeşil Çimento">
+                <span class="project-badge" data-i18n="filter-completed">Tamamlandı</span>
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="sec2-title">Endüstri & Enerji</div>
+                <h3 class="project-card-title" data-i18n="p5-title">Anadolu Yeşil Çimento Fabrikası</h3>
+                <p class="project-card-desc" data-i18n="p5-desc">Atık ısıyı elektriğe dönüştüren, düşük karbonlu çimento üreten entegre ekolojik tesis.</p>
+              </div>
+            </div>
+            <!-- Project 6 -->
+            <div class="project-card" data-category="GAYRİMENKUL & ÜSTYAPı" data-status="Tamamlandı" data-id="p6">
+              <div class="project-card-img">
+                <img src="https://images.unsplash.com/photo-1587301620398-159cf43abbad?auto=format&fit=crop&w=800&q=80" alt="Çukurova Şehir Hastanesi">
+                <span class="project-badge" data-i18n="filter-completed">Tamamlandı</span>
+              </div>
+              <div class="project-card-content">
+                <div class="project-card-category" data-i18n="sec3-title">Gayrimenkul & Üstyapı</div>
+                <h3 class="project-card-title" data-i18n="p6-title">Çukurova Şehir Hastanesi</h3>
+                <p class="project-card-desc" data-i18n="p6-desc">Sismik izolatörlü ve modern teknolojik donanımlı 1.500 yatak kapasiteli sağlık kompleksi.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== KARİYER (CAREER) ==================== -->
+    <section id="career" class="page-view fade-in-section" style="display: none;">
+      
+      <div class="sectors-section">
+        <div class="section-container">
+          <div class="section-title" style="text-align: center;">
+            <span class="section-subtitle" data-i18n="career-page-sub">Ekibimizin Bir Parçası Olun</span>
+            <h2 data-i18n="career-page-title">Kariyer Fırsatları</h2>
+          </div>
+          <p style="text-align: center; max-width: 700px; margin: 2rem auto; color: var(--text-secondary);" data-i18n="career-p">
+            Zeugma Holding, çalışanlarına küresel düzeyde büyük projelerde yer alma, kariyer basamaklarını hızla tırmanma ve mesleki uzmanlıklarını dünya standartlarında geliştirme fırsatı sunmaktadır. 
+          </p>
+
+          <!-- CAREER WIZARD FORM -->
+          <div class="wizard-container">
+            <h3 style="text-align: center; text-transform: uppercase; margin-bottom: 2rem; font-size: 1.5rem; color: var(--accent-gold);" data-i18n="wizard-title">İş Başvuru Sihirbazı</h3>
+            <div class="wizard-steps">
+              <div class="wizard-step-line"></div>
+              <div class="wizard-step-node active">1</div>
+              <div class="wizard-step-node">2</div>
+              <div class="wizard-step-node">3</div>
+            </div>
+
+            <form id="career-wizard-form" onsubmit="return false;">
+              
+              <!-- STEP 1: Personal Info -->
+              <div class="wizard-pane active" data-step="0">
+                <h4 style="margin-bottom: 1.5rem; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;" data-i18n="wizard-step1-title">Kişisel Bilgiler</h4>
+                <div class="form-group">
+                  <label for="w-name" data-i18n="lbl-name">Ad Soyad *</label>
+                  <input type="text" id="w-name" class="form-control" data-i18n-placeholder="lbl-name" placeholder="Adınız ve Soyadınız *" required>
+                </div>
+                <div class="form-group">
+                  <label for="w-email" data-i18n="lbl-email">E-posta Adresi *</label>
+                  <input type="email" id="w-email" class="form-control" data-i18n-placeholder="lbl-email" placeholder="eposta@adresiniz.com *" required>
+                </div>
+                <div class="form-group">
+                  <label for="w-phone" data-i18n="lbl-phone">Telefon Numarası *</label>
+                  <input type="tel" id="w-phone" class="form-control" data-i18n-placeholder="lbl-phone" placeholder="Telefon Numarası *" required>
+                </div>
+              </div>
+
+              <!-- STEP 2: Position & Experience -->
+              <div class="wizard-pane" data-step="1">
+                <h4 style="margin-bottom: 1.5rem; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;" data-i18n="wizard-step2-title">Pozisyon ve Deneyim</h4>
+                <div class="form-group">
+                  <label for="w-pos" data-i18n="lbl-position">Başvurulan Alan / Departman *</label>
+                  <select id="w-pos" class="form-control" required>
+                    <option value="" data-i18n="filter-all">Seçiniz...</option>
+                    <option value="eng">İnşaat / Saha Mühendisliği</option>
+                    <option value="arch">Mimarlık & Tasarım</option>
+                    <option value="hse">İş Sağlığı, Güvenliği ve Çevre (HSE)</option>
+                    <option value="admin">İdari & Finansal İşler</option>
+                    <option value="other">Diğer</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="w-exp" data-i18n="lbl-experience">Deneyim Süresi *</label>
+                  <select id="w-exp" class="form-control" required>
+                    <option value="" data-i18n="filter-all">Seçiniz...</option>
+                    <option value="0-2">0 - 2 Yıl (Yeni Mezun / Genç Yetenek)</option>
+                    <option value="2-5">2 - 5 Yıl</option>
+                    <option value="5-10">5 - 10 Yıl</option>
+                    <option value="10+">10 Yıldan Fazla</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="w-letter" data-i18n="lbl-letter">Önyazı / Kendinizi Kısaca Tanıtın *</label>
+                  <textarea id="w-letter" class="form-control" data-i18n-placeholder="lbl-letter" placeholder="Kariyer hedefleriniz ve yetkinlikleriniz... *" required></textarea>
+                </div>
+              </div>
+
+              <!-- STEP 3: Resume / Upload simulation -->
+              <div class="wizard-pane" data-step="2">
+                <h4 style="margin-bottom: 1.5rem; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;" data-i18n="wizard-step3-title">CV ve Belgeler</h4>
+                <div class="form-group" style="text-align: center; padding: 2rem; border: 2px dashed var(--glass-border); border-radius: 4px; background-color: var(--bg-primary);">
+                  <label for="w-cv" style="cursor: pointer; display: block;">
+                    <div style="font-size: 3rem; color: var(--accent-gold); margin-bottom: 1rem;">📤</div>
+                    <span style="font-size: 1rem; color: var(--text-primary); font-weight: 600;" data-i18n="lbl-cv">Özgeçmişinizi Yükleyin</span>
+                    <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;" data-i18n="lbl-cv-formats">PDF, DOCX formatları desteklenmektedir (Maks. 5MB)</span>
+                  </label>
+                  <input type="file" id="w-cv" style="display: none;" required>
+                  <div id="cv-file-name" style="margin-top: 1rem; font-weight: 600; color: var(--accent-gold);"></div>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem;">
+                  <label style="display: flex; align-items: flex-start; gap: 0.5rem; text-transform: none; font-weight: normal; cursor: pointer;">
+                    <input type="checkbox" required style="margin-top: 0.2rem;">
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);" data-i18n="lbl-kvkk">
+                      KVKK kapsamında kişisel verilerimin, iş başvurumun değerlendirilmesi amacıyla işlenmesini ve saklanmasını onaylıyorum. *
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- NAV ACTIONS -->
+              <div class="wizard-buttons">
+                <button type="button" class="btn btn-secondary btn-prev" data-i18n="btn-prev">Geri</button>
+                <button type="button" class="btn btn-primary btn-next" data-i18n="btn-next">İleri</button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== İLETİŞİM (CONTACT) ==================== -->
+    <section id="contact" class="page-view fade-in-section" style="display: none;">
+      
+      <div class="form-section">
+        <div class="section-container">
+          <div class="section-title">
+            <span class="section-subtitle" data-i18n="contact-page-sub">Bize Ulaşın</span>
+            <h2 data-i18n="contact-page-title">İletişim</h2>
+          </div>
+          
+          <div class="form-grid" style="margin-top: 4rem;">
+            
+            <!-- Details left -->
+            <div class="contact-info-panel">
+              <h3 data-i18n="contact-panel-h">Bize Yazın ya da Ziyaret Edin</h3>
+              <p data-i18n="contact-panel-p">Projelerimiz, yatırımlarımız veya tedarik süreçlerimiz hakkında detaylı bilgi almak için bizimle iletişime geçebilirsiniz.</p>
+              
+              <!-- Office Selector Tabs -->
+              <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem;">
+                <button class="office-tab" data-office="istanbul" style="background: none; border: 1px solid var(--glass-border); border-color: var(--accent-gold); color: var(--text-primary); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-family: var(--font-title); font-weight: 600; font-size: 0.85rem;">İSTANBUL (HQ)</button>
+                <button class="office-tab" data-office="ankara" style="background: none; border: 1px solid var(--glass-border); color: var(--text-primary); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-family: var(--font-title); font-weight: 600; font-size: 0.85rem;">ANKARA</button>
+                <button class="office-tab" data-office="baku" style="background: none; border: 1px solid var(--glass-border); color: var(--text-primary); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-family: var(--font-title); font-weight: 600; font-size: 0.85rem;">BAKÜ</button>
+              </div>
+
+              <!-- Active Office Details -->
+              <div class="contact-details" style="background-color: var(--bg-tertiary); padding: 2rem; border-radius: 8px; border: 1px solid var(--glass-border); margin-bottom: 2rem;">
+                <h4 id="office-details-title" style="font-size: 1.25rem; text-transform: uppercase; margin-bottom: 1.5rem; color: var(--accent-gold);">İstanbul Merkez Ofis (HQ)</h4>
+                <div class="detail-item">
+                  <div class="detail-icon">📞</div>
+                  <div class="detail-text">
+                    <h4 data-i18n="office-phone">Telefon</h4>
+                    <p id="office-details-phone">+90 (212) 800 45 00</p>
+                  </div>
+                </div>
+                <div style="height: 1rem;"></div>
+                <div class="detail-item">
+                  <div class="detail-icon">📍</div>
+                  <div class="detail-text">
+                    <h4 data-i18n="office-address">Adres</h4>
+                    <p id="office-details-addr">Büyükdere Caddesi, No: 193, Kule 2, Levent, İstanbul</p>
+                  </div>
+                </div>
+                <div style="height: 1rem;"></div>
+                <div class="detail-item">
+                  <div class="detail-icon">✉</div>
+                  <div class="detail-text">
+                    <h4 data-i18n="office-email">E-posta</h4>
+                    <p id="office-details-email">istanbul@zeugmaholding.com.tr</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Map Representation Mock -->
+              <div style="width: 100%; height: 200px; border-radius: 8px; border: 1px solid var(--glass-border); background-color: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background-image: radial-gradient(circle, var(--accent-gold-light) 1px, transparent 1px); background-size: 20px 20px;">
+                <div style="background-color: var(--bg-primary); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 600; font-family: var(--font-title); z-index: 10;" data-i18n="office-map-btn">
+                  HARİTAYI GÖSTER (MOCK)
+                </div>
+              </div>
+            </div>
+
+            <!-- Form right -->
+            <div class="form-card">
+              <h3 data-i18n="contact-form-h">Bize Mesaj Gönderin</h3>
+              <form id="contact-form">
+                <div class="form-group">
+                  <label for="contact-name" data-i18n="lbl-name">Adınız Soyadınız *</label>
+                  <input type="text" id="contact-name" class="form-control" data-i18n-placeholder="lbl-name" placeholder="Ad Soyad *" required>
+                </div>
+                <div class="form-group">
+                  <label for="contact-email" data-i18n="lbl-email">E-posta Adresiniz *</label>
+                  <input type="email" id="contact-email" class="form-control" data-i18n-placeholder="lbl-email" placeholder="eposta@adresi.com *" required>
+                </div>
+                <div class="form-group">
+                  <label for="contact-phone" data-i18n="lbl-phone">Telefon Numarası</label>
+                  <input type="tel" id="contact-phone" class="form-control" data-i18n-placeholder="lbl-phone" placeholder="Telefon Numarası">
+                </div>
+                <div class="form-group">
+                  <label for="contact-subject" data-i18n="contact-form-subject-lbl">Konu *</label>
+                  <select id="contact-subject" class="form-control" required>
+                    <option value="" data-i18n="filter-all">Seçiniz...</option>
+                    <option value="info">Genel Bilgilendirme</option>
+                    <option value="tender">Tedarikçi / İhale Başvuruları</option>
+                    <option value="press">Basın & Medya</option>
+                    <option value="sug">Öneri & Geri Bildirim</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="contact-msg" data-i18n="contact-form-msg-lbl">Mesajınız *</label>
+                  <textarea id="contact-msg" class="form-control" data-i18n-placeholder="contact-form-msg-lbl" placeholder="Lütfen mesajınızı detaylıca yazınız... *" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="contact-form-btn">Gönder</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- 4. PROJECT DETAIL MODAL -->
+  <div id="project-modal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-container">
+      <button class="modal-close">&times;</button>
+      <div class="modal-content-grid">
+        <div class="modal-img-col">
+          <img id="modal-project-img" src="" alt="Proje Detay Görseli">
+        </div>
+        <div class="modal-details-col">
+          <span class="modal-tag" id="modal-project-cat">Kategori</span>
+          <h3 id="modal-project-title">Proje Başlığı</h3>
+          <p id="modal-project-desc" style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem;"></p>
+          
+          <ul class="modal-meta-list">
+            <li><strong data-i18n="modal-lbl-status">Durum:</strong> <span id="modal-meta-status">Tamamlandı</span></li>
+            <li><strong data-i18n="modal-lbl-duration">Süre:</strong> <span id="modal-meta-duration">36 Ay</span></li>
+            <li><strong data-i18n="modal-lbl-location">Lokasyon:</strong> <span id="modal-meta-location">İstanbul, Türkiye</span></li>
+            <li><strong data-i18n="modal-lbl-client">İşveren:</strong> <span id="modal-meta-client">Ulaştırma Bakanlığı</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. FOOTER -->
+  <footer>
+    <div class="section-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="#" class="logo" data-target="home" style="margin-bottom: 1.5rem;">
+            Zeugma<span>Holding</span>
+          </a>
+          <p data-i18n="footer-text">
+            Zeugma Holding, ulaştırma altyapısı, endüstri tesisleri ve yenilenebilir enerji alanındaki uzmanlığıyla sürdürülebilir bir gelecek inşa eden küresel mühendislik ortağıdır.
+          </p>
+          <div class="footer-socials">
+            <a href="#" class="social-icon">in</a>
+            <a href="#" class="social-icon">yt</a>
+            <a href="#" class="social-icon">x</a>
+            <a href="#" class="social-icon">ig</a>
+          </div>
+        </div>
+        
+        <div class="footer-col">
+          <h3 data-i18n="footer-links-title-1">Hızlı Linkler</h3>
+          <ul>
+            <li><a href="#" data-target="corporate" data-i18n="nav-corporate">Kurumsal</a></li>
+            <li><a href="#" data-target="corporate" data-i18n="board-title">Yönetim Kurulu</a></li>
+            <li><a href="#" data-target="sectors" data-i18n="nav-sectors">Sektörlerimiz</a></li>
+            <li><a href="#" data-target="projects" data-i18n="nav-projects">Tüm Projeler</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 data-i18n="footer-links-title-2">Kurumsal</h3>
+          <ul>
+            <li><a href="#" data-target="corporate" data-i18n="time-title">Tarihçemiz</a></li>
+            <li><a href="#" data-target="career" data-i18n="nav-career">İnsan Kaynakları</a></li>
+            <li><a href="#" data-target="contact" data-i18n="nav-contact">Ofis Lokasyonları</a></li>
+            <li><a href="#" data-i18n="lbl-kvkk">KVKK & Politikalar</a></li>
+            <li><a href="#">Etik İlkelerimiz</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 data-i18n="footer-links-title-3">İletişim</h3>
+          <p>
+            <strong data-i18n="office-address">Adres</strong>: Büyükdere Cd. No:193 Kule 2, Levent, İstanbul<br>
+            <strong data-i18n="office-phone">Telefon</strong>: +90 (212) 800 45 00<br>
+            <strong>E-posta</strong>: info@zeugmaholding.com.tr
+          </p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <div data-i18n="footer-bottom-text">&copy; 2026 Zeugma Holding A.Ş. Tüm hakları saklıdır.</div>
+        <div class="footer-links">
+          <a href="#" data-i18n="footer-link-usage">Kullanım Koşulları</a>
+          <a href="#" data-i18n="footer-link-privacy">Gizlilik Politikası</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    // CV file upload feedback
+    document.getElementById('w-cv')?.addEventListener('change', function(e) {
+      const nameContainer = document.getElementById('cv-file-name');
+      if (nameContainer && e.target.files.length > 0) {
+        nameContainer.innerText = "Yüklenen Dosya: " + e.target.files[0].name;
+      }
+    });
+
+    // Simple canvas drawing animation for structural blueprint feel
+    const canvas = document.createElement('canvas');
+    const container = document.getElementById('blueprint-canvas');
+    if (container) {
+      container.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = container.offsetWidth;
+      let h = canvas.height = container.offsetHeight;
+
+      window.addEventListener('resize', () => {
+        w = canvas.width = container.offsetWidth;
+        h = canvas.height = container.offsetHeight;
+      });
+
+      const lines = [];
+      for(let i=0; i<15; i++) {
+        lines.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          length: Math.random() * 150 + 50
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(197, 168, 128, 0.04)';
+        ctx.lineWidth = 1;
+        
+        // Grid pattern background
+        ctx.beginPath();
+        for(let x=0; x<w; x+=30) {
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+        }
+        for(let y=0; y<h; y+=30) {
+          ctx.moveTo(0, y);
+          ctx.lineTo(w, y);
+        }
+        ctx.stroke();
+
+        ctx.strokeStyle = 'rgba(197, 168, 128, 0.15)';
+        lines.forEach(l => {
+          ctx.beginPath();
+          ctx.moveTo(l.x, l.y);
+          ctx.lineTo(l.x + l.length, l.y - l.length * 0.5);
+          ctx.stroke();
+
+          // Move lines
+          l.x += l.vx;
+          l.y += l.vy;
+          if (l.x < -200 || l.x > w + 200) l.vx *= -1;
+          if (l.y < -200 || l.y > h + 200) l.vy *= -1;
+        });
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+  </script>
+</body>
+</html>

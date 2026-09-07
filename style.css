@@ -8,7 +8,7 @@
   --accent-gold: #c5a880;
   --accent-gold-hover: #b09166;
   --accent-gold-light: rgba(197, 168, 128, 0.15);
-  --accent-teal: #1bc5bd;
+  --accent-teal: #c5a880;
   
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
@@ -47,6 +47,8 @@
 
 html {
   scroll-behavior: smooth;
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
 }
 
 body {
@@ -56,7 +58,19 @@ body {
   font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
   -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--accent-gold) !important;
+  color: #040810 !important;
+}
+
+::-moz-selection {
+  background-color: var(--accent-gold) !important;
+  color: #040810 !important;
 }
 
 /* Custom Scrollbar */
@@ -188,11 +202,14 @@ header {
   left: 0;
   width: 100%;
   z-index: 1000;
-  backdrop-filter: blur(12px);
-  background-color: rgba(4, 8, 16, 0.8);
+  background-color: rgba(4, 8, 16, 0.98);
   border-bottom: 1px solid var(--glass-border);
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
   outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
   -webkit-tap-highlight-color: transparent !important;
 }
 
@@ -200,7 +217,11 @@ header *,
 .nav-container,
 .nav-container * {
   outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
   -webkit-tap-highlight-color: transparent !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
 .nav-container {
@@ -216,7 +237,7 @@ header *,
 }
 
 header.scrolled {
-  background-color: rgba(4, 8, 16, 0.94);
+  background-color: rgba(4, 8, 16, 0.98);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
   border-bottom-color: rgba(197, 168, 128, 0.25);
 }
@@ -237,14 +258,20 @@ header.scrolled .nav-container {
   gap: 0.75rem;
   text-decoration: none !important;
   outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
   box-shadow: none !important;
   border: none !important;
   flex-shrink: 0;
-  user-select: none;
+  user-select: none !important;
+  -webkit-user-select: none !important;
   -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  cursor: pointer;
 }
 
 .logo-img,
+.logo-img:hover,
 .logo-img:focus,
 .logo-img:focus-visible,
 .logo-img:active {
@@ -252,15 +279,18 @@ header.scrolled .nav-container {
   height: 36px;
   object-fit: contain;
   border-radius: 50%;
-  border: 1px solid var(--accent-gold);
+  border: 1px solid var(--accent-gold) !important;
   background-color: #ffffff;
   padding: 2px;
-  box-shadow: 0 0 10px rgba(197, 168, 128, 0.3);
+  box-shadow: 0 0 10px rgba(197, 168, 128, 0.3) !important;
   transition: transform var(--transition-fast);
   flex-shrink: 0;
   outline: none !important;
-  user-select: none;
-  -webkit-user-drag: none;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  -webkit-user-select: none !important;
   -webkit-tap-highlight-color: transparent !important;
 }
 
@@ -272,6 +302,8 @@ header.scrolled .nav-container {
   display: flex;
   flex-direction: column;
   line-height: 1.1;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
 .logo-title {
@@ -281,6 +313,8 @@ header.scrolled .nav-container {
   color: var(--text-primary);
   text-transform: uppercase;
   white-space: nowrap;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
 .logo-title span {
@@ -294,6 +328,8 @@ header.scrolled .nav-container {
   font-weight: 600;
   text-transform: uppercase;
   white-space: nowrap;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
 .nav-links {

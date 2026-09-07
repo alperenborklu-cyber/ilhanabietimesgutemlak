@@ -75,6 +75,7 @@ const pageToPath = {
 
 function initRouter() {
   const pages = document.querySelectorAll('.page-view');
+  let currentPageId = null;
   
   // Clean any hash from URL bar immediately on startup
   const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
@@ -84,7 +85,15 @@ function initRouter() {
   
   const initialPage = routeMap[currentPath] || 'home';
   showPage(initialPage, false);
-  
+
+  // Prevent browser focus ring on mousedown for navigation links
+  document.addEventListener('mousedown', (e) => {
+    const link = e.target.closest('a');
+    if (link && (link.hasAttribute('data-target') || link.classList.contains('logo'))) {
+      e.preventDefault();
+    }
+  });
+
   // Intercept all link clicks globally to prevent '#' and route smoothly
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a');
@@ -107,8 +116,6 @@ function initRouter() {
         }
       } catch (err) {}
       
-      showPage(targetId, true);
-      
       // Close mobile menu if open
       const navList = document.querySelector('.nav-links');
       const burger = document.querySelector('.burger');
@@ -117,7 +124,7 @@ function initRouter() {
         burger.classList.remove('toggle');
       }
       
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showPage(targetId, true);
     }
   });
   
@@ -131,6 +138,14 @@ function initRouter() {
     let targetPage = document.getElementById(pageId);
     if (!targetPage) return;
     
+    // If user is already on this page (e.g. clicking logo while on homepage),
+    // do NOT hide/re-show the page to avoid any video re-render or layout flicker!
+    if (currentPageId === pageId) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    currentPageId = pageId;
+
     pages.forEach(page => {
       page.style.display = 'none';
       page.classList.remove('fade-in-section');
@@ -158,6 +173,8 @@ function initRouter() {
       }
     }
     
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     if (pageId === 'home') {
       resetStats();
       setTimeout(animateStats, 200);

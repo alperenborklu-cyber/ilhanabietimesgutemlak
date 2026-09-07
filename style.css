@@ -98,13 +98,35 @@ h1, h2, h3, h4, h5, h6 {
 
 .loader-logo {
   font-family: var(--font-title);
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--text-primary);
   margin-bottom: 2rem;
   position: relative;
   text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.loader-logo-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 2px solid var(--accent-gold);
+  background-color: #fff;
+  padding: 4px;
+  box-shadow: 0 0 25px rgba(197, 168, 128, 0.45);
+  animation: pulseLogo 2s infinite ease-in-out;
+}
+
+@keyframes pulseLogo {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(197, 168, 128, 0.3); }
+  50% { transform: scale(1.06); box-shadow: 0 0 30px rgba(197, 168, 128, 0.6); }
 }
 
 .loader-logo span {
@@ -167,16 +189,55 @@ header.scrolled {
 
 .logo {
   font-family: var(--font-title);
-  font-size: 1.8rem;
+  font-size: 1.35rem;
   font-weight: 800;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   display: flex;
   align-items: center;
+  gap: 0.85rem;
 }
 
-.logo span {
+.logo-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-gold);
+  background-color: #ffffff;
+  padding: 3px;
+  box-shadow: 0 0 12px rgba(197, 168, 128, 0.35);
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.logo:hover .logo-img {
+  transform: rotate(6deg) scale(1.06);
+}
+
+.logo-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
+}
+
+.logo-title span {
   color: var(--accent-gold);
+}
+
+.logo-subtitle {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .nav-links {
@@ -1330,3 +1391,705 @@ footer {
     transform: translateX(0);
   }
 }
+
+/* ===================================================
+   ETİMESGUT EMLAK OFİSİ - CUSTOM COMPONENTS
+   =================================================== */
+
+/* GOOGLE REVIEWS SHOWCASE */
+.google-rating-banner {
+  background: linear-gradient(135deg, rgba(17, 26, 46, 0.9), rgba(10, 17, 32, 0.95));
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 2.5rem;
+  margin-bottom: 3.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.google-rating-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, #4285F4, #EA4335, #FBBC05, #34A853);
+}
+
+.google-brand-summary {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.google-g-icon {
+  width: 52px;
+  height: 52px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+
+.google-score-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.google-score-num {
+  font-family: var(--font-title);
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.google-score-num span {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.google-stars {
+  color: #FBBC04;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  margin: 0.25rem 0;
+}
+
+.google-review-count {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.google-review-count strong {
+  color: var(--accent-gold);
+}
+
+.google-action-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* REVIEWS GRID */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.review-card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 2rem;
+  position: relative;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-gold);
+  box-shadow: var(--shadow-md);
+}
+
+.review-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.review-author-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.review-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  font-family: var(--font-title);
+}
+
+.review-author-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.review-g-tag {
+  width: 20px;
+  height: 20px;
+  opacity: 0.9;
+}
+
+.review-stars-row {
+  color: #FBBC04;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+}
+
+.review-quote {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.review-badge {
+  display: inline-block;
+  align-self: flex-start;
+  background-color: var(--accent-gold-light);
+  border: 1px solid rgba(197, 168, 128, 0.3);
+  color: var(--accent-gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+}
+
+/* BROKER / TEAM CARDS */
+.brokers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+  margin-top: 3rem;
+}
+
+.broker-card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 2.5rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.broker-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-gold);
+  box-shadow: var(--shadow-lg);
+}
+
+.broker-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-gold), transparent);
+}
+
+.broker-avatar-wrap {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-gold);
+  padding: 3px;
+  background-color: var(--bg-primary);
+  flex-shrink: 0;
+  box-shadow: 0 0 15px rgba(197, 168, 128, 0.2);
+}
+
+.broker-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.broker-info {
+  flex-grow: 1;
+}
+
+.broker-name {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.broker-role {
+  color: var(--accent-gold);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.broker-bio {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+.broker-contact-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-broker-call {
+  background-color: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.45rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-broker-call:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  background-color: var(--accent-gold-light);
+}
+
+.btn-broker-wa {
+  background-color: #25D366;
+  border: 1px solid #25D366;
+  color: #ffffff;
+  padding: 0.45rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-broker-wa:hover {
+  background-color: #1eb954;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+}
+
+/* INSTAGRAM SECTION */
+.instagram-box {
+  background: linear-gradient(135deg, rgba(17, 26, 46, 0.9), rgba(10, 17, 32, 0.95));
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 3rem;
+  margin-top: 3rem;
+}
+
+.instagram-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.instagram-account-badge {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.instagram-logo-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  flex-shrink: 0;
+}
+
+.instagram-logo-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #ffffff;
+  object-fit: contain;
+  padding: 2px;
+}
+
+.instagram-account-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.instagram-meta-info {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.instagram-meta-info strong {
+  color: var(--text-primary);
+}
+
+.btn-instagram-follow {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-instagram-follow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 39, 67, 0.4);
+}
+
+.instagram-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.instagram-post-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 260px;
+  border: 1px solid var(--glass-border);
+  display: block;
+}
+
+.instagram-post-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.instagram-post-card:hover img {
+  transform: scale(1.08);
+}
+
+.instagram-post-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(4, 8, 16, 0.9) 20%, rgba(4, 8, 16, 0.4) 60%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem;
+  opacity: 0.85;
+  transition: opacity var(--transition-fast);
+}
+
+.instagram-post-card:hover .instagram-post-overlay {
+  opacity: 1;
+  background: linear-gradient(to top, rgba(4, 8, 16, 0.95) 30%, rgba(4, 8, 16, 0.5) 70%, transparent 100%);
+}
+
+.ig-post-top-icon {
+  align-self: flex-end;
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.ig-post-caption {
+  color: #ffffff;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  font-weight: 500;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+
+/* PROPERTY CARD SPEC STRIP & PRICE */
+.property-price-tag {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: rgba(4, 8, 16, 0.9);
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  padding: 0.4rem 0.85rem;
+  border-radius: 4px;
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.property-features-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0.75rem 0 1rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.property-features-bar span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.property-card-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btn-card-details {
+  flex-grow: 1;
+  text-align: center;
+  background-color: var(--accent-gold-light);
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.btn-card-details:hover {
+  background-color: var(--accent-gold);
+  color: var(--bg-primary);
+}
+
+.btn-card-wa {
+  background-color: #25D366;
+  color: #ffffff;
+  border: 1px solid #25D366;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+}
+
+.btn-card-wa:hover {
+  transform: scale(1.08);
+}
+
+/* VALUATION WIZARD STYLES */
+.val-pill-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.val-pill-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.val-pill-card:hover,
+.val-pill-card.selected {
+  border-color: var(--accent-gold);
+  background-color: var(--accent-gold-light);
+  transform: translateY(-2px);
+}
+
+.val-pill-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.val-pill-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+/* FLOATING WHATSAPP & PHONE WIDGET */
+.floating-contact-widget {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 9990;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.floating-wa-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-color: #25D366;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.5);
+  cursor: pointer;
+  border: none;
+  position: relative;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  animation: pulseWa 2.5s infinite;
+}
+
+.floating-wa-btn svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+@keyframes pulseWa {
+  0%, 100% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
+  50% { box-shadow: 0 4px 30px rgba(37, 211, 102, 0.8); }
+}
+
+.floating-wa-btn:hover {
+  transform: scale(1.08);
+}
+
+.floating-wa-menu {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--accent-gold);
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-lg);
+  display: none;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 270px;
+  animation: viewFadeIn 0.25s ease;
+}
+
+.floating-wa-menu.active {
+  display: flex;
+}
+
+.floating-wa-menu-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-gold);
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0.5rem;
+}
+
+.floating-wa-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.floating-wa-item:hover {
+  border-color: #25D366;
+  background-color: rgba(37, 211, 102, 0.1);
+  color: #25D366;
+}
+
+.floating-wa-item svg {
+  width: 20px;
+  height: 20px;
+  fill: #25D366;
+  flex-shrink: 0;
+}
+
+/* RESPONSIVE ENHANCEMENTS */
+@media (max-width: 992px) {
+  .reviews-grid,
+  .instagram-posts-grid,
+  .val-pill-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .brokers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .reviews-grid,
+  .instagram-posts-grid,
+  .val-pill-grid {
+    grid-template-columns: 1fr;
+  }
+  .google-rating-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .broker-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  .broker-contact-row {
+    justify-content: center;
+  }
+}
+

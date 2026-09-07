@@ -5,9 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollHeader();
   initStatsObserver();
   initProjectFilters();
-  initCareerWizard();
+  initValuationWizard();
   initContactForm();
   initModals();
+  initFloatingWidget();
   initLanguageSwitcher();
 });
 
@@ -24,7 +25,7 @@ function initPreloader() {
   
   let width = 0;
   const interval = setInterval(() => {
-    width += Math.floor(Math.random() * 8) + 2;
+    width += Math.floor(Math.random() * 9) + 3;
     if (width >= 100) {
       width = 100;
       clearInterval(interval);
@@ -33,17 +34,17 @@ function initPreloader() {
         preloader.style.opacity = '0';
         preloader.style.visibility = 'hidden';
         document.body.classList.add('loaded');
-      }, 500);
+      }, 400);
     }
     
     if (bar) bar.style.width = width + '%';
     if (counter) counter.innerText = width + '%';
-  }, 40);
+  }, 35);
 }
 
 // 2. CLIENT-SIDE ROUTER (SPA)
 function initRouter() {
-  const navLinks = document.querySelectorAll('.logo, .nav-links a, .footer-col ul a, .hero-cta .btn');
+  const navLinks = document.querySelectorAll('.logo, .nav-links a, .footer-col ul a, .hero-cta a, a[data-target]');
   const pages = document.querySelectorAll('.page-view');
   
   showPage('home');
@@ -58,7 +59,7 @@ function initRouter() {
         // Close mobile menu if open
         const navList = document.querySelector('.nav-links');
         const burger = document.querySelector('.burger');
-        if (navList.classList.contains('nav-active')) {
+        if (navList && navList.classList.contains('nav-active')) {
           navList.classList.remove('nav-active');
           burger.classList.remove('toggle');
         }
@@ -80,7 +81,7 @@ function initRouter() {
     targetPage.style.display = 'block';
     setTimeout(() => {
       targetPage.classList.add('fade-in-section');
-    }, 50);
+    }, 40);
     
     document.querySelectorAll('.nav-links a').forEach(a => {
       if (a.getAttribute('data-target') === pageId) {
@@ -92,6 +93,7 @@ function initRouter() {
     
     if (pageId === 'home') {
       resetStats();
+      setTimeout(animateStats, 200);
     }
   }
 }
@@ -101,7 +103,7 @@ function initBurgerMenu() {
   const burger = document.querySelector('.burger');
   const navList = document.querySelector('.nav-links');
   
-  if (!burger) return;
+  if (!burger || !navList) return;
   
   burger.addEventListener('click', () => {
     navList.classList.toggle('nav-active');
@@ -123,8 +125,9 @@ function initBurgerMenu() {
 // 4. SCROLL HEADER STYLING
 function initScrollHeader() {
   const header = document.querySelector('header');
+  if (!header) return;
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
+    if (window.scrollY > 40) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
@@ -156,8 +159,10 @@ function animateStats() {
   statNumbers.forEach(stat => {
     const target = parseInt(stat.getAttribute('data-val'), 10);
     const suffix = stat.getAttribute('data-suffix') || '';
+    if (isNaN(target)) return;
+    
     let current = 0;
-    const duration = 2000;
+    const duration = 1500;
     const stepTime = Math.max(Math.floor(duration / target), 15);
     
     const counter = setInterval(() => {
@@ -179,10 +184,10 @@ function resetStats() {
   });
 }
 
-// 6. PROJECT GRID FILTERS
+// 6. PORTFOLIO GRID FILTERS
 function initProjectFilters() {
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const projectCards = document.querySelectorAll('.project-card');
+  const projectCards = document.querySelectorAll('.project-card[data-category]');
   
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -193,13 +198,12 @@ function initProjectFilters() {
       
       projectCards.forEach(card => {
         const cat = card.getAttribute('data-category');
-        const status = card.getAttribute('data-status');
         
         card.style.opacity = '0';
-        card.style.transform = 'scale(0.95)';
+        card.style.transform = 'scale(0.96)';
         
         setTimeout(() => {
-          if (filterValue === 'all' || cat === filterValue || status === filterValue) {
+          if (filterValue === 'all' || cat === filterValue) {
             card.style.display = 'block';
             setTimeout(() => {
               card.style.opacity = '1';
@@ -208,22 +212,36 @@ function initProjectFilters() {
           } else {
             card.style.display = 'none';
           }
-        }, 300);
+        }, 250);
       });
     });
   });
 }
 
-// 7. CAREER MULTI-STEP WIZARD
-function initCareerWizard() {
-  const wizard = document.getElementById('career-wizard-form');
+// 7. REAL ESTATE VALUATION WIZARD
+function initValuationWizard() {
+  const wizard = document.getElementById('valuation-wizard-form');
   if (!wizard) return;
   
   const panes = wizard.querySelectorAll('.wizard-pane');
-  const nodes = wizard.querySelectorAll('.wizard-step-node');
-  const stepLine = wizard.querySelector('.wizard-step-line');
+  const nodes = document.querySelectorAll('.wizard-step-node');
+  const stepLine = document.querySelector('.wizard-step-line');
   const nextBtn = wizard.querySelector('.btn-next');
   const prevBtn = wizard.querySelector('.btn-prev');
+  
+  // Property type selector cards in Step 0
+  const typePills = wizard.querySelectorAll('.val-pill-card');
+  const typeInput = document.getElementById('val-property-type');
+  
+  typePills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      typePills.forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+      if (typeInput) {
+        typeInput.value = pill.getAttribute('data-type');
+      }
+    });
+  });
   
   let currentStep = 0;
   updateWizard();
@@ -234,7 +252,7 @@ function initCareerWizard() {
         currentStep++;
         updateWizard();
       } else {
-        submitCareerApplication();
+        submitValuation();
       }
     }
   });
@@ -248,12 +266,12 @@ function initCareerWizard() {
   
   function updateWizard() {
     panes.forEach((pane, idx) => {
-      if (pane.classList) {
-        if (idx === currentStep) {
-          pane.classList.add('active');
-        } else {
-          pane.classList.remove('active');
-        }
+      if (idx === currentStep) {
+        pane.classList.add('active');
+        pane.style.display = 'block';
+      } else {
+        pane.classList.remove('active');
+        pane.style.display = 'none';
       }
     });
     
@@ -280,7 +298,7 @@ function initCareerWizard() {
     }
     
     if (currentStep === panes.length - 1) {
-      nextBtn.innerText = currentLang === 'tr' ? 'Başvuruyu Tamamla' : 'Submit Application';
+      nextBtn.innerText = currentLang === 'tr' ? 'Değerleme Talebini Tamamla' : 'Submit Valuation Request';
     } else {
       nextBtn.innerText = currentLang === 'tr' ? 'İleri' : 'Next';
     }
@@ -294,7 +312,7 @@ function initCareerWizard() {
     inputs.forEach(input => {
       if (!input.value.trim()) {
         isValid = false;
-        input.style.borderColor = 'red';
+        input.style.borderColor = '#ef4444';
         input.addEventListener('input', () => {
           input.style.borderColor = 'var(--glass-border)';
         }, { once: true });
@@ -308,238 +326,334 @@ function initCareerWizard() {
     return isValid;
   }
   
-  function submitCareerApplication() {
+  function submitValuation() {
+    const intent = document.getElementById('val-intent')?.value || 'Belirtilmedi';
+    const propType = document.getElementById('val-property-type')?.value || 'Daire';
+    const neighborhood = document.getElementById('val-neighborhood')?.value || 'Etimesgut';
+    const rooms = document.getElementById('val-rooms')?.value || '';
+    const area = document.getElementById('val-area')?.value || '';
+    const floor = document.getElementById('val-floor')?.value || '';
+    const age = document.getElementById('val-age')?.value || '';
+    const priceExp = document.getElementById('val-price-expectation')?.value || 'Belirtilmedi';
+    const deed = document.getElementById('val-deed-status')?.value || '';
+    const notes = document.getElementById('val-notes')?.value || '';
+    const name = document.getElementById('val-name')?.value || 'Müşteri';
+    const phone = document.getElementById('val-phone')?.value || '';
+    const channel = document.getElementById('val-channel')?.value || 'WhatsApp';
+    
+    const waText = encodeURIComponent(
+      `*ETİMESGUT EMLAK OFİSİ - DEĞERLEME TALEBİ*\n` +
+      `--------------------------------\n` +
+      `👤 *Müşteri:* ${name}\n` +
+      `📞 *Telefon:* ${phone}\n` +
+      `🎯 *İşlem:* ${intent}\n` +
+      `🏠 *Mülk Tipi:* ${propType}\n` +
+      `📍 *Konum:* ${neighborhood}\n` +
+      `🛏 *Oda / m²:* ${rooms} - ${area} m²\n` +
+      `🏢 *Kat / Bina Yaşı:* ${floor} / ${age}\n` +
+      `💰 *Fiyat Beklentisi:* ${priceExp}\n` +
+      `📜 *Tapu Durumu:* ${deed}\n` +
+      `📝 *Notlar:* ${notes}\n` +
+      `📲 *İletişim Tercihi:* ${channel}`
+    );
+    
+    const waUrl = `https://wa.me/905418510600?text=${waText}`;
+    
     const container = document.querySelector('.wizard-container');
     container.innerHTML = `
-      <div style="text-align: center; padding: 3rem 1rem;" class="fade-in-section">
-        <div style="font-size: 4rem; color: var(--accent-gold); margin-bottom: 1.5rem;">✓</div>
-        <h3 style="font-size: 2rem; text-transform: uppercase; margin-bottom: 1rem;">
-          ${currentLang === 'tr' ? 'Başvurunuz Alındı' : 'Application Received'}
+      <div style="text-align: center; padding: 3rem 1.5rem;" class="fade-in-section">
+        <div style="font-size: 4rem; color: #25D366; margin-bottom: 1.5rem;">✓</div>
+        <h3 style="font-size: 1.8rem; text-transform: uppercase; margin-bottom: 1rem; color: var(--text-primary);">
+          ${currentLang === 'tr' ? 'Değerleme Talebiniz Hazırlandı' : 'Valuation Request Prepared'}
         </h3>
-        <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 2rem auto;">
-          ${currentLang === 'tr' 
-            ? 'Zeugma Holding İnsan Kaynakları ekibi olarak başvurunuzu aldık. En kısa sürede sizinle iletişime geçilecektir.' 
-            : 'As Zeugma Holding Human Resources team, we have received your application. We will contact you as soon as possible.'}
+        <p style="color: var(--text-secondary); max-width: 540px; margin: 0 auto 2rem auto; line-height: 1.6;">
+          ${currentLang === 'tr'
+            ? `Sayın <strong>${name}</strong>, bilgileriniz kaydedildi. İlhan Kurt ve Adem Gürsoy'a bilgilerinizi doğrudan WhatsApp üzerinden ileterek anında ön ekspertiz alabilirsiniz:`
+            : `Dear <strong>${name}</strong>, your details are registered. You can directly send them via WhatsApp for instant pre-valuation:`}
         </p>
-        <button class="btn btn-primary" onclick="location.reload()">${currentLang === 'tr' ? 'Geri Dön' : 'Back'}</button>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <a href="${waUrl}" target="_blank" class="btn-broker-wa" style="padding: 0.85rem 1.75rem; font-size: 1rem; border-radius: 4px;">
+            <span>💬</span> ${currentLang === 'tr' ? "WhatsApp'tan Hemen Gönder" : 'Send via WhatsApp'}
+          </a>
+          <button class="btn btn-secondary" onclick="location.reload()">${currentLang === 'tr' ? 'Yeni Talep Oluştur' : 'Create New Request'}</button>
+        </div>
       </div>
     `;
   }
 }
 
-// 8. CONTACT FORM & OFFICE SWITCHER
+// 8. CONTACT FORM
 function initContactForm() {
   const contactForm = document.getElementById('contact-form');
-  if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const name = document.getElementById('contact-name').value;
-      const email = document.getElementById('contact-email').value;
-      const msg = document.getElementById('contact-msg').value;
-      
-      if (name && email && msg) {
-        if (currentLang === 'tr') {
-          alert(`Sayın ${name}, mesajınız başarıyla iletilmiştir. En kısa sürede dönüş sağlanacaktır.`);
-        } else {
-          alert(`Dear ${name}, your message has been sent successfully. We will get back to you shortly.`);
-        }
-        contactForm.reset();
-      }
-    });
-  }
+  if (!contactForm) return;
   
-  const officeTabs = document.querySelectorAll('.office-tab');
-  const detailsTitle = document.getElementById('office-details-title');
-  const detailsPhone = document.getElementById('office-details-phone');
-  const detailsAddr = document.getElementById('office-details-addr');
-  const detailsEmail = document.getElementById('office-details-email');
-  
-  if (officeTabs.length && detailsTitle) {
-    const officeData = {
-      istanbul: {
-        tr: {
-          title: 'İstanbul Merkez Ofis (HQ)',
-          addr: 'Büyükdere Caddesi, No: 193, Kule 2, Levent, İstanbul'
-        },
-        en: {
-          title: 'Istanbul Head Office (HQ)',
-          addr: 'Buyukdere Street, No: 193, Tower 2, Levent, Istanbul'
-        },
-        phone: '+90 (212) 800 45 00',
-        email: 'istanbul@zeugmaholding.com.tr'
-      },
-      ankara: {
-        tr: {
-          title: 'Ankara Temsilciliği',
-          addr: 'Dumlupınar Bulvarı, No: 9, Çankaya, Ankara'
-        },
-        en: {
-          title: 'Ankara Representative Office',
-          addr: 'Dumlupinar Boulevard, No: 9, Cankaya, Ankara'
-        },
-        phone: '+90 (312) 550 12 00',
-        email: 'ankara@zeugmaholding.com.tr'
-      },
-      baku: {
-        tr: {
-          title: 'Bakü Operasyon Ofisi',
-          addr: 'Nizami Caddesi, Bakü LandMark Binası, Bakü, Azerbaycan'
-        },
-        en: {
-          title: 'Baku Operations Office',
-          addr: 'Nizami Street, Baku Landmark Building, Baku, Azerbaijan'
-        },
-        phone: '+994 (12) 490 88 00',
-        email: 'baku@zeugmaholding.com.tr'
-      }
-    };
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
     
-    officeTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        officeTabs.forEach(t => t.style.borderColor = 'var(--glass-border)');
-        tab.style.borderColor = 'var(--accent-gold)';
-        
-        const loc = tab.getAttribute('data-office');
-        const data = officeData[loc];
-        if (data) {
-          detailsTitle.innerText = data[currentLang].title;
-          detailsPhone.innerText = data.phone;
-          detailsAddr.innerText = data[currentLang].addr;
-          detailsEmail.innerText = data.email;
-        }
-      });
-    });
-  }
+    const name = document.getElementById('contact-name')?.value || '';
+    const phone = document.getElementById('contact-phone')?.value || '';
+    const subject = document.getElementById('contact-subject')?.value || 'Genel';
+    const msg = document.getElementById('contact-msg')?.value || '';
+    
+    if (name && phone && msg) {
+      const waMsg = encodeURIComponent(
+        `*ETİMESGUT EMLAK - İLETİŞİM FORMU*\n` +
+        `👤 *Ad Soyad:* ${name}\n` +
+        `📞 *Telefon:* ${phone}\n` +
+        `📌 *Konu:* ${subject}\n` +
+        `✉️ *Mesaj:* ${msg}`
+      );
+      
+      const sendWa = confirm(
+        currentLang === 'tr'
+          ? `Teşekkürler Sayın ${name}. Mesajınızı İlhan Bey ve Adem Bey'e doğrudan WhatsApp üzerinden de iletmek ister misiniz?`
+          : `Thank you ${name}. Would you like to forward your message directly via WhatsApp?`
+      );
+      
+      if (sendWa) {
+        window.open(`https://wa.me/905418510600?text=${waMsg}`, '_blank');
+      } else {
+        alert(currentLang === 'tr' ? 'Mesajınız başarıyla iletildi. En kısa sürede aranacaksınız.' : 'Your message has been sent. We will get back to you shortly.');
+      }
+      
+      contactForm.reset();
+    }
+  });
 }
 
-// 9. DYNAMIC MODALS
-const projectData = {
+// 9. DYNAMIC PROPERTY DATA & MODALS
+const propertyData = {
   p1: {
     tr: {
-      title: 'Avrasya Mega Tüneli',
-      category: 'ULAŞIM & ALTYAPI',
-      status: 'Tamamlandı',
-      duration: '36 Ay',
-      location: 'İstanbul, Türkiye',
-      client: 'Ulaştırma Bakanlığı',
-      desc: 'Boğazın altından geçen, iki kıtayı birbirine bağlayan çift katlı karayolu tüneli projesi. İleri teknoloji tünel açma makineleri (TBM) kullanılarak sismik dayanıklılık öncelikli inşa edilmiştir.'
+      title: 'İstasyon Mah. Sıfır Lüks 3+1 Daire',
+      category: 'SATILIK KONUT',
+      price: '3.850.000 TL',
+      location: 'İstasyon Mahallesi, Etimesgut, Ankara',
+      rooms: '3+1',
+      area: '135 m² Net / 155 m² Brüt',
+      heating: 'Kombi (Doğalgaz)',
+      floor: '3. Kat (Ara Kat)',
+      broker: 'İlhan Kurt (0541 851 06 00)',
+      brokerPhone: '05418510600',
+      desc: 'Etimesgut İstasyon Mahallesi merkezinde, Başkentray ve YHT istasyonuna 5 dakika yürüme mesafesinde sıfır lüks daire. Ebeveyn banyolu, giyinme bölümlü, geniş çift balkonlu, kapalı otoparklı ve asansörlüdür. Birinci sınıf işçilik ve kaliteli malzeme kullanılmıştır. Krediye uygundur, hemen taşınmaya hazırdır.'
     },
     en: {
-      title: 'Eurasia Mega Tunnel',
-      category: 'TRANSPORTATION & INFRASTRUCTURE',
-      status: 'Completed',
-      duration: '36 Months',
-      location: 'Istanbul, Turkey',
-      client: 'Ministry of Transport',
-      desc: 'Double-deck highway tunnel crossing beneath the Bosphorus Strait to connect Europe and Asia, designed with high seismic resilience using advanced TBM technology.'
+      title: 'Istasyon Dist. Brand New Luxury 3+1 Apartment',
+      category: 'FOR SALE RESIDENTIAL',
+      price: '3,850,000 TL',
+      location: 'Istasyon Neighborhood, Etimesgut, Ankara',
+      rooms: '3+1',
+      area: '135 m² Net / 155 m² Gross',
+      heating: 'Individual Gas Combi',
+      floor: '3rd Floor (Middle Floor)',
+      broker: 'İlhan Kurt (+90 541 851 06 00)',
+      brokerPhone: '05418510600',
+      desc: 'Brand new luxury apartment situated in central Istasyon neighborhood, within 5 minutes walk to Baskentray and High Speed Train. Features en-suite master bathroom, dressing area, double balconies, covered parking, and elevator.'
     },
-    img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80'
+    img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'
   },
   p2: {
     tr: {
-      title: 'Gordion Rüzgar Enerjisi Santrali',
-      category: 'ENDÜSTRİ & ENERJİ',
-      status: 'Tamamlandı',
-      duration: '24 Ay',
-      location: 'İzmir, Türkiye',
-      client: 'Enerji Piyasası Düzenleme Kurumu',
-      desc: '120 MW kurulu güce sahip, 80 türbinli dev yenilenebilir enerji yatırımı.'
+      title: 'Bağlıca Bulvarı Cepheli 4+1 Dubleks',
+      category: 'FIRSAT PORTFÖY / DUBLEKS',
+      price: '6.750.000 TL',
+      location: 'Bağlıca Mahallesi, Etimesgut, Ankara',
+      rooms: '4+1 Çatı Dubleksi',
+      area: '220 m² Net / 250 m² Brüt',
+      heating: 'Yerden Isıtma (Merkezi Pay Ölçer)',
+      floor: 'Çatı Dubleksi',
+      broker: 'Adem Gürsoy (0534 571 99 04)',
+      brokerPhone: '05345719904',
+      desc: 'Bağlıca Bulvarı üzerinde, prestijli sitede önü tamamen açık şehir manzaralı 4+1 lüks dubleks. 40 m² barbekülü ferah teras, akıllı ev altyapısı, ada tezgahlı modern mutfak ve 7/24 güvenlikli site imkanları sunmaktadır. Bölgenin en değerli lokasyonunda kaçırılmayacak yaşam alanı.'
     },
     en: {
-      title: 'Gordion Wind Power Plant',
-      category: 'INDUSTRY & ENERGY',
-      status: 'Completed',
-      duration: '24 Months',
-      location: 'Izmir, Turkey',
-      client: 'Energy Market Regulatory Authority',
-      desc: 'A massive 120 MW green energy investment comprising 80 wind turbines.'
+      title: 'Baglica Boulevard Facing 4+1 Duplex Penthouse',
+      category: 'FEATURED / DUPLEX',
+      price: '6,750,000 TL',
+      location: 'Baglica Neighborhood, Etimesgut, Ankara',
+      rooms: '4+1 Duplex',
+      area: '220 m² Net / 250 m² Gross',
+      heating: 'Underfloor Heating',
+      floor: 'Penthouse Duplex',
+      broker: 'Adem Gürsoy (+90 534 571 99 04)',
+      brokerPhone: '05345719904',
+      desc: 'Panoramic city view luxury penthouse on Baglica Boulevard. Offers a 40 m² barbecue terrace, smart home automation, high-end kitchen, 24/7 security, and open/closed parking.'
     },
-    img: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=800&q=80'
+    img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80'
   },
   p3: {
     tr: {
-      title: 'Ege Port Liman Genişletmesi',
-      category: 'ULAŞIM & ALTYAPI',
-      status: 'Devam Ediyor',
-      duration: '48 Ay (Tahmini)',
-      location: 'İzmir, Türkiye',
-      client: 'Zeugma Liman Yatırımları A.Ş.',
-      desc: 'Lojistik kapasiteyi üç katına çıkaracak derin deniz rıhtımları ve dolgu sahası inşaatı.'
+      title: 'Cadde Üzeri Kurumsal Kiracılı Satılık Dükkan',
+      category: 'TİCARİ YATIRIM',
+      price: '5.200.000 TL',
+      location: 'Alsancak Mahallesi, Etimesgut, Ankara',
+      rooms: 'Ticari / Mağaza & Depo',
+      area: '175 m² Net (Düz Giriş + Depo)',
+      heating: 'Klima & Doğalgaz',
+      floor: 'Zemin Düz Ayak Giriş',
+      broker: 'İlhan Kurt (0541 851 06 00)',
+      brokerPhone: '05418510600',
+      desc: 'Alsancak ana cadde üzerinde, yüksek tabela ve vitrin değerine sahip satılık ticari gayrimenkul. İçerisinde 5 yıllık sözleşmeli kurumsal hazır kiracı bulunmakta olup aylık 35.000 TL net kira getirisi mevcuttur. Düzenli ve yüksek kira çarpanı arayan yatırımcılar için ideal fırsattır.'
     },
     en: {
-      title: 'Ege Port Terminal Expansion',
-      category: 'TRANSPORTATION & INFRASTRUCTURE',
-      status: 'Ongoing',
-      duration: '48 Months (Est.)',
-      location: 'Izmir, Turkey',
-      client: 'Zeugma Port Investments Inc.',
-      desc: 'Construction of deep-water berths and land reclamation expanding container logistics capacity by 3x.'
+      title: 'Main Street Commercial Shop with Corporate Tenant',
+      category: 'COMMERCIAL INVESTMENT',
+      price: '5,200,000 TL',
+      location: 'Alsancak Neighborhood, Etimesgut, Ankara',
+      rooms: 'Store / Commercial Unit',
+      area: '175 m² Net (Ground Floor + Storage)',
+      heating: 'A/C & Natural Gas',
+      floor: 'Ground Floor Level Entrance',
+      broker: 'İlhan Kurt (+90 541 851 06 00)',
+      brokerPhone: '05418510600',
+      desc: 'High foot-traffic main avenue retail store with a dependable 5-year corporate lease yielding 35,000 TL monthly rental income. Exceptional ROI for long-term commercial property investors.'
     },
-    img: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=800&q=80'
+    img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80'
   },
   p4: {
     tr: {
-      title: 'Alara Eko-Kule Konutları',
-      category: 'GAYRİMENKUL & ÜSTYAPI',
-      status: 'Devam Ediyor',
-      duration: '30 Ay (Tahmini)',
-      location: 'İstanbul, Türkiye',
-      client: 'Özel Sektör Konsorsiyumu',
-      desc: 'LEED Platin yeşil bina sertifikası adayı olan, kendi enerjisini üretebilen ve yağmur suyu geri dönüşüm sistemlerine sahip 42 katlı lüks rezidans kulesi.'
+      title: 'Göksu Parkı Yakını Kiralık 2+1 Daire',
+      category: 'KİRALIK KONUT',
+      price: '19.500 TL / Ay',
+      location: 'Eryaman, Etimesgut, Ankara',
+      rooms: '2+1',
+      area: '95 m² Net / 110 m² Brüt',
+      heating: 'Merkezi Pay Ölçer',
+      floor: '2. Kat',
+      broker: 'Adem Gürsoy (0534 571 99 04)',
+      brokerPhone: '05345719904',
+      desc: 'Eryaman Göksu Parkı ve metro istasyonuna yürüme mesafesinde, boyalı ve masrafsız kiralık 2+1 daire. Cam balkonlu, güney-doğu cepheli, açık otoparklı, nezih aile sitesinde huzurlu yaşam alanı. Memur veya kurumsal çalışan aileler tercih sebebidir.'
     },
     en: {
-      title: 'Alara Eco-Tower Residences',
-      category: 'REAL ESTATE & BUILDINGS',
-      status: 'Ongoing',
-      duration: '30 Months (Est.)',
-      location: 'Istanbul, Turkey',
-      client: 'Private Sector Consortium',
-      desc: 'A LEED Platinum-certified, self-powered 42-story smart residential tower incorporating rainwater harvesting systems.'
+      title: '2+1 Apartment for Rent Near Goksu Park',
+      category: 'FOR RENT RESIDENTIAL',
+      price: '19,500 TL / Month',
+      location: 'Eryaman, Etimesgut, Ankara',
+      rooms: '2+1',
+      area: '95 m² Net / 110 m² Gross',
+      heating: 'Central Heating Meter',
+      floor: '2nd Floor',
+      broker: 'Adem Gürsoy (+90 534 571 99 04)',
+      brokerPhone: '05345719904',
+      desc: 'Move-in ready 2+1 rental apartment in walking proximity to Goksu Park and Eryaman Metro station. Glazed balcony, south-east orientation, in a peaceful family complex.'
     },
-    img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80'
+    img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'
   },
   p5: {
     tr: {
-      title: 'Anadolu Yeşil Çimento Fabrikası',
-      category: 'ENDÜSTRİ & ENERJİ',
-      status: 'Tamamlandı',
-      duration: '18 Ay',
-      location: 'Kayseri, Türkiye',
-      client: 'Zeugma Çimento Grubu',
-      desc: 'Düşük karbonlu, yüksek mukavemetli sürdürülebilir çimento üretimi gerçekleştiren, bacalarındaki atık ısıyı elektrik enerjisine dönüştüren entegre tesis.'
+      title: 'Süvari Mahallesi Bakımlı 3+1 Ara Kat',
+      category: 'SATILIK KONUT',
+      price: '3.150.000 TL',
+      location: 'Süvari Mahallesi, Etimesgut, Ankara',
+      rooms: '3+1',
+      area: '125 m² Net / 140 m² Brüt',
+      heating: 'Kombi (Doğalgaz)',
+      floor: '2. Kat (Ara Kat)',
+      broker: 'İlhan Kurt (0541 851 06 00)',
+      brokerPhone: '05418510600',
+      desc: 'Süvari Mahallesi merkezinde, ilkokul, ortaokul, sağlık ocağı ve semt pazarına 2 dakika mesafede ara kat daire. Yenilenmiş mutfak dolapları ve banyosu, çift balkonu, geniş salonu ile masrafsız hemen oturuma uygun daire.'
     },
     en: {
-      title: 'Anadolu Green Cement Factory',
-      category: 'INDUSTRY & ENERGY',
-      status: 'Completed',
-      duration: '18 Months',
-      location: 'Kayseri, Turkey',
-      client: 'Zeugma Cement Group',
-      desc: 'An eco-friendly integrated facility producing low-carbon cement by generating electricity from waste heat.'
+      title: 'Well-Maintained 3+1 Middle Floor in Suvari',
+      category: 'FOR SALE RESIDENTIAL',
+      price: '3,150,000 TL',
+      location: 'Suvari Neighborhood, Etimesgut, Ankara',
+      rooms: '3+1',
+      area: '125 m² Net / 140 m² Gross',
+      heating: 'Individual Combi',
+      floor: '2nd Floor (Middle Floor)',
+      broker: 'İlhan Kurt (+90 541 851 06 00)',
+      brokerPhone: '05418510600',
+      desc: 'Center of Suvari neighborhood, 2 minutes away from primary/middle schools, healthcare clinic, and weekly bazaar. Renovated kitchen, dual balconies, spacious layout.'
     },
-    img: 'https://images.unsplash.com/photo-1590069261209-f8e9b8642343?auto=format&fit=crop&w=800&q=80'
+    img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80'
   },
   p6: {
     tr: {
-      title: 'Çukurova Şehir Hastanesi',
-      category: 'GAYRİMENKUL & ÜSTYAPI',
-      status: 'Tamamlandı',
-      duration: '40 Ay',
-      location: 'Adana, Türkiye',
-      client: 'Sağlık Bakanlığı (KÖİ Modeli)',
-      desc: '1.200 sismik izolatörle donatılmış, 1.500 yatak kapasiteli, bölgenin en gelişmiş sağlık kompleksi ve üniversite hastanesi projesi.'
+      title: 'İmarlı Konut & Villa Parseli 650 m²',
+      category: 'ARSA & YATIRIM',
+      price: '4.450.000 TL',
+      location: 'Bağlıca / Şehitali Aksı, Etimesgut, Ankara',
+      rooms: 'İmarlı Konut Arsası',
+      area: '650 m² Müstakil Parsel',
+      heating: 'Altyapı Mevcut',
+      floor: 'Emsal: 0.50 (2 Kat Villa İzni)',
+      broker: 'Adem Gürsoy (0534 571 99 04)',
+      brokerPhone: '05345719904',
+      desc: 'Etimesgut Bağlıca ve Şehitali gelişim aksında, etrafında lüks villa projelerinin bulunduğu bölgede müstakil tek tapulu imarlı arsa. Elektrik, su, kanalizasyon ve yol altyapısı mevcuttur. Hemen kendi müstakil villanızı yapabilir veya değer kazanan bölgede yatırımlık tutabilirsiniz.'
     },
     en: {
-      title: 'Çukurova City Hospital',
-      category: 'REAL ESTATE & BUILDINGS',
-      status: 'Completed',
-      duration: '40 Months',
-      location: 'Adana, Turkey',
-      client: 'Ministry of Health (PPP Model)',
-      desc: 'A 1,500-bed state-of-the-art medical complex equipped with advanced seismic base isolators.'
+      title: '650 m² Zoned Residential & Villa Plot',
+      category: 'LAND & INVESTMENT',
+      price: '4,450,000 TL',
+      location: 'Baglica / Sehitali Corridor, Etimesgut, Ankara',
+      rooms: 'Zoned Residential Plot',
+      area: '650 m² Private Parcel',
+      heating: 'Utilities Ready',
+      floor: 'FAR: 0.50 (2-Storey Villa Approval)',
+      broker: 'Adem Gürsoy (+90 534 571 99 04)',
+      brokerPhone: '05345719904',
+      desc: 'Standalone freehold titled plot in the fast-appreciating villa development corridor of Baglica/Sehitali. Complete infrastructure including roads, electricity, and water connection.'
     },
-    img: 'https://images.unsplash.com/photo-1587301620398-159cf43abbad?auto=format&fit=crop&w=800&q=80'
+    img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80'
+  },
+  p7: {
+    tr: {
+      title: 'Prestijli Sitede 4+1 Ultra Lüks Daire',
+      category: 'SATILIK KONUT',
+      price: '5.400.000 TL',
+      location: 'Ahi Mesut Mahallesi, Etimesgut, Ankara',
+      rooms: '4+1',
+      area: '170 m² Net / 195 m² Brüt',
+      heating: 'Kombi (Doğalgaz)',
+      floor: '5. Kat',
+      broker: 'İlhan Kurt (0541 851 06 00)',
+      brokerPhone: '05418510600',
+      desc: 'Ahi Mesut Mahallesinin en gözde sitesinde, çift asansörlü, jeneratörlü, kapalı yüzme havuzu, fitness salonu ve 24 saat özel güvenlikli sitede 4+1 geniş lüks daire. Ankastre set, ebeveyn banyosu, kiler odası ve geniş peyzaj alanları mevcuttur.'
+    },
+    en: {
+      title: '4+1 Ultra Luxury Apartment in Prestigious Complex',
+      category: 'FOR SALE RESIDENTIAL',
+      price: '5,400,000 TL',
+      location: 'Ahi Mesut Neighborhood, Etimesgut, Ankara',
+      rooms: '4+1',
+      area: '170 m² Net / 195 m² Gross',
+      heating: 'Combi Heating',
+      floor: '5th Floor',
+      broker: 'İlhan Kurt (+90 541 851 06 00)',
+      brokerPhone: '05418510600',
+      desc: 'Top-tier gated complex in Ahi Mesut featuring indoor swimming pool, gym, 24/7 security guard, backup generator, dual elevators, pantry, and lush landscaping.'
+    },
+    img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'
+  },
+  p8: {
+    tr: {
+      title: 'Ana Cadde Üzeri Kiralık Ofis / Büro Katı',
+      category: 'KİRALIK TİCARİ',
+      price: '24.000 TL / Ay',
+      location: 'İstasyon Caddesi, Etimesgut, Ankara',
+      rooms: '3 Bölüm + Karşılama + Mutfak',
+      area: '120 m² Net',
+      heating: 'Kombi',
+      floor: '1. Kat (Ofis Katı)',
+      broker: 'Adem Gürsoy (0534 571 99 04)',
+      brokerPhone: '05345719904',
+      desc: 'Etimesgut İstasyon Caddesi üzerinde, tabela değeri yüksek iş merkezinde 1. kat kiralık ofis büro. Avukatlık bürosu, mali müşavir, mühendislik, mimarlık veya eğitim danışmanlığı için ideal oda dağılımına sahiptir. Asansörlü binada merkezi konum.'
+    },
+    en: {
+      title: 'Main Street Commercial Office Floor for Rent',
+      category: 'FOR RENT COMMERCIAL',
+      price: '24,000 TL / Month',
+      location: 'Istasyon Avenue, Etimesgut, Ankara',
+      rooms: '3 Partitioned Rooms + Reception + Kitchenette',
+      area: '120 m² Net',
+      heating: 'Combi',
+      floor: '1st Floor (Office Level)',
+      broker: 'Adem Gürsoy (+90 534 571 99 04)',
+      brokerPhone: '05345719904',
+      desc: 'Prime business building on Istasyon Avenue, optimal for law practices, accounting, architectural or engineering consulting offices with excellent signage exposure.'
+    },
+    img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80'
   }
 };
 
@@ -552,30 +666,50 @@ function initModals() {
   
   const mTitle = document.getElementById('modal-project-title');
   const mCat = document.getElementById('modal-project-cat');
+  const mPrice = document.getElementById('modal-project-price');
   const mDesc = document.getElementById('modal-project-desc');
-  const mStatus = document.getElementById('modal-meta-status');
-  const mDuration = document.getElementById('modal-meta-duration');
   const mLocation = document.getElementById('modal-meta-location');
-  const mClient = document.getElementById('modal-meta-client');
+  const mRooms = document.getElementById('modal-meta-rooms');
+  const mArea = document.getElementById('modal-meta-area');
+  const mHeating = document.getElementById('modal-meta-heating');
+  const mFloor = document.getElementById('modal-meta-floor');
+  const mBroker = document.getElementById('modal-meta-broker');
   const mImg = document.getElementById('modal-project-img');
+  const btnWa = document.getElementById('modal-btn-wa');
+  const btnCall = document.getElementById('modal-btn-call');
   
   const projectCards = document.querySelectorAll('.project-card[data-id]');
   
   projectCards.forEach(card => {
     card.addEventListener('click', () => {
       const pid = card.getAttribute('data-id');
-      const data = projectData[pid];
+      const item = propertyData[pid];
       
-      if (data) {
-        const langData = data[currentLang] || data['tr'];
-        mTitle.innerText = langData.title;
-        mCat.innerText = langData.category;
-        mDesc.innerText = langData.desc;
-        mStatus.innerText = langData.status;
-        mDuration.innerText = langData.duration;
-        mLocation.innerText = langData.location;
-        mClient.innerText = langData.client;
-        mImg.src = data.img;
+      if (item) {
+        const langData = item[currentLang] || item['tr'];
+        if (mTitle) mTitle.innerText = langData.title;
+        if (mCat) mCat.innerText = langData.category;
+        if (mPrice) mPrice.innerText = langData.price;
+        if (mDesc) mDesc.innerText = langData.desc;
+        if (mLocation) mLocation.innerText = langData.location;
+        if (mRooms) mRooms.innerText = langData.rooms;
+        if (mArea) mArea.innerText = langData.area;
+        if (mHeating) mHeating.innerText = langData.heating;
+        if (mFloor) mFloor.innerText = langData.floor;
+        if (mBroker) mBroker.innerText = langData.broker;
+        if (mImg) mImg.src = item.img;
+        
+        const brokerNumber = langData.brokerPhone || '05418510600';
+        const waMsg = encodeURIComponent(
+          `Merhaba, web sitenizdeki "${langData.title}" (${langData.price}) ilanınız hakkında detaylı bilgi almak istiyorum.`
+        );
+        
+        if (btnWa) {
+          btnWa.href = `https://wa.me/90${brokerNumber.replace(/^0/, '')}?text=${waMsg}`;
+        }
+        if (btnCall) {
+          btnCall.href = `tel:${brokerNumber}`;
+        }
         
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -583,8 +717,8 @@ function initModals() {
     });
   });
   
-  closeBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (overlay) overlay.addEventListener('click', closeModal);
   
   function closeModal() {
     modal.classList.remove('active');
@@ -592,350 +726,142 @@ function initModals() {
   }
 }
 
-// 10. LANGUAGE TRANSLATION (i18n)
+// 10. FLOATING WHATSAPP & CONTACT WIDGET
+function initFloatingWidget() {
+  const toggleBtn = document.getElementById('floating-wa-toggle');
+  const menu = document.getElementById('floating-wa-menu');
+  
+  if (!toggleBtn || !menu) return;
+  
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('active');
+  });
+  
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target) && e.target !== toggleBtn) {
+      menu.classList.remove('active');
+    }
+  });
+}
+
+// 11. LANGUAGE TRANSLATION (i18n)
 const translations = {
   tr: {
-    // Nav & General
     "nav-corporate": "Kurumsal",
-    "nav-sectors": "Faaliyet Alanları",
-    "nav-projects": "Projeler",
-    "nav-career": "Kariyer",
+    "nav-sectors": "Hizmetlerimiz",
+    "nav-projects": "Portföyümüz",
+    "nav-reviews": "Google Yorumları (4.8 ★)",
+    "nav-valuation": "Ücretsiz Değerleme",
     "nav-contact": "İletişim",
     
-    // Home Page
-    "hero-sub": "Küresel Altyapı ve Mühendislik Grubu",
-    "hero-title-1": "Sınırları Aşan",
-    "hero-title-2": "Büyük Projeler",
-    "hero-desc": "Ulaştırma, yenilenebilir enerji, mega altyapı ve sürdürülebilir üstyapı çözümleriyle dünya standartlarında mühendislik üretiyoruz.",
-    "hero-btn-1": "Projelerimizi İnceleyin",
-    "hero-btn-2": "Biz Kimiz?",
+    "hero-sub": "Etimesgut & Çevresi Gayrimenkul ve Yatırım Danışmanlığı",
+    "hero-title-1": "Güvenilir, Şeffaf ve",
+    "hero-title-2": "Doğru Yatırımın Adresi",
+    "hero-desc": "İlhan Kurt ve Adem Gürsoy güvencesiyle; Etimesgut, Bağlıca, Eryaman ve tüm Ankara aksında satılık ve kiralık konut, ticari mülk ve yatırımlık arsalarda dürüst esnaflık ve profesyonel danışmanlık.",
+    "hero-btn-1": "Portföyümüzü İnceleyin",
+    "hero-btn-2": "Ücretsiz Değerleme Alın",
     
-    "stat-employees-lbl": "Çalışan Sayısı",
-    "stat-countries-lbl": "Aktif Ülke",
-    "stat-ciro-lbl": "Yıllık Ciro",
-    "stat-enr-lbl": "ENR Dünya Sıralaması",
+    "stat-reviews-lbl": "Google Müşteri Yorumu (4.8 ★)",
+    "stat-experience-lbl": "Yıllık Bölge Uzmanlığı",
+    "stat-deals-lbl": "Başarılı Alım-Satım & Kiralama",
+    "stat-trust-lbl": "Şeffaflık & Müşteri Memnuniyeti",
     
     "sectors-sub": "Uzmanlık Alanlarımız",
-    "sectors-title": "Faaliyet Sektörleri",
-    "sectors-btn": "Tüm Sektörler",
+    "sectors-title": "Hizmetlerimiz",
+    "sectors-btn": "Tüm Hizmetler",
     
-    "sec1-title": "Ulaşım & Altyapı",
-    "sec1-desc": "Otoyollar, viyadükler, raylı sistemler, havalimanları ve derin deniz limanlarıyla küresel ulaşım ağları inşa ediyoruz.",
-    "sec2-title": "Endüstri & Enerji",
-    "sec2-desc": "Rüzgar, hidroelektrik, jeotermal tesisler ve modern endüstriyel üretim kompleksleriyle sürdürülebilir geleceği besliyoruz.",
-    "sec3-title": "Gayrimenkul & Üstyapı",
-    "sec3-desc": "Akıllı şehir hastaneleri, yeşil bina sertifikalı konutlar ve yüksek teknolojili ticari merkezler geliştiriyoruz.",
+    "sec1-title": "Konut Alım, Satım & Kiralama",
+    "sec1-desc": "Etimesgut ve çevre mahallelerde sıfır ve ikinci el daireler, dubleksler, site içi konutlar ve güvenilir kiracı yerleşimi.",
+    "sec2-title": "Ticari Gayrimenkul & Dükkan",
+    "sec2-desc": "Cadde üzeri dükkanlar, mağazalar, plazalar, yüksek kira getirili kurumsal kiracılı ticari mülk yatırımları.",
+    "sec3-title": "Arsa, Arazi & Tarla Yatırımları",
+    "sec3-desc": "Etimesgut, Bağlıca, Yapracık ve çevre gelişim koridorlarında imarlı konut/ticari arsalar ve kat karşılığı projeler.",
     
-    "proj-sub": "Mühendislik Harikalarımız",
-    "proj-title": "Öne Çıkan Projeler",
-    "proj-btn": "Tümünü İncele",
-    
-    "p1-title": "Avrasya Mega Tüneli",
-    "p1-desc": "İki kıtayı deniz altından birleştiren, depreme dayanıklı çift katlı mega tünel geçişi.",
-    "p2-title": "Gordion Rüzgar Enerjisi Santrali",
-    "p2-desc": "120 MW kurulu güce sahip, 80 türbinli dev yenilenebilir enerji yatırımı.",
-    "p3-title": "Ege Port Liman Genişletmesi",
-    "p3-desc": "Lojistik kapasiteyi 3 katına çıkaracak derin deniz rıhtımları ve dolgu sahası yapımı.",
-    "p4-title": "Alara Eko-Kule Konutları",
-    "p4-desc": "LEED Platin sertifikalı, kendi enerjisini üreten 42 katlı akıllı rezidans kulesi.",
-    "p5-title": "Anadolu Yeşil Çimento Fabrikası",
-    "p5-desc": "Atık ısıyı elektriğe dönüştüren, düşük karbonlu çimento üreten entegre ekolojik tesis.",
-    "p6-title": "Çukurova Şehir Hastanesi",
-    "p6-desc": "Sismik izolatörlü ve modern teknolojik donanımlı 1.500 yatak kapasiteli sağlık kompleksi.",
-    
-    // Corporate Page
-    "corp-sub": "Köklü Geçmiş, Güçlü Gelecek",
-    "corp-title": "Kurumsal Profilimiz",
-    "corp-p1": "Zeugma Holding, 1982 yılında başladığı mühendislik yolculuğunda bugün 18 ülkede faaliyet gösteren, ENR dünyanın en büyük müteahhitleri listesinde 38. sırada yer alan küresel bir güçtür.",
-    "corp-p2": "İsmini iki medeniyeti birbirine bağlayan tarihi antik kentten alan grubumuz, tıpkı ismi gibi kıtaları, toplumları ve gelecek hayallerini sağlam köprülerle birbirine bağlamayı ilke edinmiştir. Çevreye saygı, iş güvenliği ve sürdürülebilirlik ilkelerimiz doğrultusunda, yarının medeniyetlerini inşa ediyoruz.",
-    "corp-year-lbl": "Kuruluş Yılı",
-    "corp-proj-lbl": "Tamamlanan Proje",
-    
-    "board-sub": "Yönetim Kadromuz",
-    "board-title": "Yönetim Kurulu",
-    
-    "dir1-role": "Kurucu & Yönetim Kurulu Başkanı",
-    "dir1-name": "Ahmet Zeugma",
-    "dir1-desc": "İnşaat yüksek mühendisi olan kurucumuz, 40 yılı aşkın süredir gruba vizyoner liderlik yapmaktadır.",
-    
-    "dir2-role": "Yönetim Kurulu Başkan Vekili",
-    "dir2-name": "Elif Zeugma Kaya",
-    "dir2-desc": "Yatırım ve uluslararası finans yönetiminden sorumlu başkan vekilimiz, holdingin küresel genişlemesini yönetmektedir.",
-    
-    "dir3-role": "Yönetim Kurulu Üyesi & CEO",
-    "dir3-name": "Dr. Can Demir",
-    "dir3-desc": "Enerji ve altyapı sektörlerinde 25 yıllık operasyon tecrübesine sahip CEO'muz, holdingin günlük yönetiminden sorumludur.",
-    
-    "time-sub": "Tarihe Kazınan Anlar",
-    "time-title": "Başarı Kilometre Taşlarımız",
-    "time-item-1-title": "İlk Temeller",
-    "time-item-1-desc": "Zeugma İnşaat Ltd. Şti. Ankara'da kuruldu ve ilk altyapı ve kanalizasyon taahhüt projelerine başladı.",
-    "time-item-2-title": "Endüstriyel Hamle",
-    "time-item-2-desc": "Holding, ilk baraj ve enerji santrali projesini başarıyla tamamlayarak enerji taahhüt sektörüne girdi.",
-    "time-item-3-title": "Uluslararası Açılım",
-    "time-item-3-desc": "Orta Doğu ve Doğu Avrupa'da eş zamanlı havalimanı ve karayolu projeleri üstlenilerek küresel marka olma adımı atıldı.",
-    "time-item-4-title": "Sürdürülebilir Enerji Liderliği",
-    "time-item-4-desc": "Yenilenebilir enerji kurulu gücümüz 500 MW seviyesine ulaştı ve karbon-nötr yeşil şantiyeler konsepti hayata geçirildi.",
-    "time-item-5-title": "ENR #38",
-    "time-item-5-desc": "Uluslararası müteahhitler listesinde 38. sıraya yükselen holdingimiz, 18 ülkede 45.000 çalışanla geleceği inşa etmeye devam ediyor.",
-    
-    // Sectors Page
-    "sectors-page-sub": "Operasyonel Çeşitlilik",
-    "sectors-page-title": "Faaliyet Alanlarımız",
-    
-    "sectors-sec1-lbl": "Ulaşım & Altyapı",
-    "sectors-sec1-p": "Zeugma Holding, ulaştırma altyapısı konusunda dünya çapında uzmanlaşmıştır. Şehirleri birbirine bağlayan tüneller, kıtaları aşan köprüler, yüksek hızlı demiryolu ağları ve en modern terminal tasarımlarına sahip havalimanı projeleri imza işlerimiz arasındadır.",
-    "sectors-sec1-item-1": "✓ Yüksek Hızlı Tren & Metro Hatları",
-    "sectors-sec1-item-2": "✓ Mega Tünel ve Köprü Geçişleri",
-    "sectors-sec1-item-3": "✓ Havalimanı Terminal Kompleksleri",
-    "sectors-sec1-item-4": "✓ Derin Deniz Konteyner Limanları",
-    
-    "sectors-sec2-lbl": "Endüstri & Enerji",
-    "sectors-sec2-p": "Enerji arzının güvenliğini yenilenebilir ve temiz kaynaklardan sağlamayı taahhüt ediyoruz. Rüzgar, hidroelektrik, güneş ve biyokütle enerjisi santrallerinin yanı sıra, petrokimya tesisleri, çimento fabrikaları ve entegre sanayi tesisleri mühendisliğinde öncüyüz.",
-    "sectors-sec2-item-1": "✓ Rüzgar & Güneş Santralleri (GES/RES)",
-    "sectors-sec2-item-2": "✓ Hidroelektrik Barajlar (HES)",
-    "sectors-sec2-item-3": "✓ Atık Isı Geri Kazanım Sistemleri",
-    "sectors-sec2-item-4": "✓ Petrokimya & Rafineri Tesisleri",
-    
-    "sectors-sec3-lbl": "Gayrimenkul & Üstyapı",
-    "sectors-sec3-p": "Toplumların yaşam kalitesini artıracak akıllı yapılar tasarlıyoruz. Kamu-Özel İş Birliği (KÖİ) modelleriyle inşa edilen tam teşekküllü şehir hastaneleri, lüks yaşam rezidansları, beş yıldızlı turizm otelleri ve iş dünyasının kalbi olan ofis kuleleri bu alandaki odak noktalarımızdır.",
-    "sectors-sec3-item-1": "✓ Entegre Sağlık Kampüsleri (Şehir Hastaneleri)",
-    "sectors-sec3-item-2": "✓ LEED Sertifikalı Akıllı Rezidanslar",
-    "sectors-sec3-item-3": "✓ Lüks Otel ve Kongre Merkezleri",
-    "sectors-sec3-item-4": "✓ Ticari İş & Alışveriş Merkezleri",
-    
-    // Projects Page
-    "projects-page-sub": "Üstün Mühendislik Portföyümüz",
-    "projects-page-title": "Projelerimiz",
+    "proj-sub": "Fırsat ve Güncel İlanlar",
+    "proj-title": "Öne Çıkan Portföyümüz",
+    "proj-btn": "Tüm İlanları İncele",
     "filter-all": "Tümü",
-    "filter-transport": "Ulaşım & Altyapı",
-    "filter-energy": "Endüstri & Enerji",
-    "filter-building": "Gayrimenkul & Üstyapı",
-    "filter-completed": "Tamamlananlar",
-    "filter-ongoing": "Devam Edenler",
     
-    // Career Page
-    "career-page-sub": "Ekibimizin Bir Parçası Olun",
-    "career-page-title": "Kariyer Fırsatları",
-    "career-p": "Zeugma Holding, çalışanlarına küresel düzeyde büyük projelerde yer alma, kariyer basamaklarını hızla tırmanma ve mesleki uzmanlıklarını dünya standartlarında geliştirme fırsatı sunmaktadır.",
-    "wizard-title": "İş Başvuru Sihirbazı",
-    "wizard-step1-title": "Kişisel Bilgiler",
-    "wizard-step2-title": "Pozisyon ve Deneyim",
-    "wizard-step3-title": "CV ve Belgeler",
+    "corp-sub": "Köklü Güven, Dürüst Esnaflık",
+    "corp-title": "Biz Kimiz & Danışmanlarımız",
+    "corp-p1": "Etimesgut Emlak Ofisi, Ankara Etimesgut'ta gayrimenkul alım, satım, kiralama ve yatırım danışmanlığı alanında dürüstlük, hak ve hukuk gözetme ilkeleriyle hizmet veren bölgenin öncü gayrimenkul ofisidir.",
+    "corp-p2": "Müşterilerimizin 'Nerede o eski güvenilir esnaflar derdik, çok da uzakta değilmiş' sözleriyle tarif ettiği çalışma prensibimiz; malı satıp elden çıkarmak değil, her taşınmazı bizzat kendimize alıyormuşçasına tüm artıları ve eksileriyle şeffaf biçimde sunmaktır.",
     
-    "lbl-name": "Ad Soyad *",
-    "lbl-email": "E-posta Adresi *",
-    "lbl-phone": "Telefon Numarası *",
-    "lbl-position": "Başvurulan Alan / Departman *",
-    "lbl-experience": "Deneyim Süresi *",
-    "lbl-letter": "Önyazı / Kendinizi Kısaca Tanıtın *",
-    "lbl-cv": "Özgeçmişinizi Yükleyin",
-    "lbl-cv-formats": "PDF, DOCX formatları desteklenmektedir (Maks. 5MB)",
-    "lbl-kvkk": "KVKK kapsamında kişisel verilerimin, iş başvurumun değerlendirilmesi amacıyla işlenmesini ve saklanmasını onaylıyorum. *",
-    "btn-prev": "Geri",
-    "btn-next": "İleri",
+    "sec-page-sub": "Kapsamlı Danışmanlık",
+    "sec-page-title": "Gayrimenkul Hizmetlerimiz",
     
-    // Contact Page
-    "contact-page-sub": "Bize Ulaşın",
-    "contact-page-title": "İletişim",
-    "contact-panel-h": "Bize Yazın ya da Ziyaret Edin",
-    "contact-panel-p": "Projelerimiz, yatırımlarımız veya tedarik süreçlerimiz hakkında detaylı bilgi almak için bizimle iletişime geçebilirsiniz.",
-    "contact-form-h": "Bize Mesaj Gönderin",
-    "contact-form-subject-lbl": "Konu *",
-    "contact-form-msg-lbl": "Mesajınız *",
-    "contact-form-btn": "Gönder",
+    "proj-page-sub": "Seçkin İlanlarımız",
+    "proj-page-title": "Etimesgut Emlak Portföyü",
     
-    // Office Labels
-    "office-phone": "Telefon",
+    "contact-page-sub": "Ofisimize Bir Kahveye Bekleriz",
+    "contact-page-title": "İletişim & Konum",
+    "contact-panel-h": "Etimesgut Emlak Ofisi",
+    "contact-panel-p": "Ev alım-satımı, kiralama, arsa yatırımı veya ücretsiz ekspertiz için ofisimize bekler veya doğrudan telefonla arayabilirsiniz.",
+    "office-phone": "Telefon & Danışmanlar",
     "office-address": "Adres",
-    "office-email": "E-posta",
-    "office-map-btn": "HARİTAYI GÖSTER (MOCK)",
+    "contact-form-h": "Bize Mesaj Gönderin",
+    "contact-form-btn": "Mesajı Gönder",
     
-    // Footer & Meta labels
-    "footer-text": "Zeugma Holding, ulaştırma altyapısı, endüstri tesisleri ve yenilenebilir enerji alanındaki uzmanlığıyla sürdürülebilir bir gelecek inşa eden küresel mühendislik ortağıdır.",
-    "footer-links-title-1": "Hızlı Linkler",
-    "footer-links-title-2": "Kurumsal",
-    "footer-links-title-3": "İletişim",
-    "footer-bottom-text": "© 2026 Zeugma Holding A.Ş. Tüm hakları saklıdır.",
-    "footer-link-usage": "Kullanım Koşulları",
-    "footer-link-privacy": "Gizlilik Politikası",
-    
-    "modal-lbl-status": "Durum:",
-    "modal-lbl-duration": "Süre:",
-    "modal-lbl-location": "Lokasyon:",
-    "modal-lbl-client": "İşveren:"
+    "footer-text": "Etimesgut Emlak Ofisi, İlhan Kurt ve Adem Gürsoy güvencesiyle Ankara Etimesgut genelinde güvenilir, şeffaf ve profesyonel gayrimenkul alım-satım ve kiralama danışmanlığı sunar."
   },
   en: {
-    // Nav & General
-    "nav-corporate": "Corporate",
-    "nav-sectors": "Sectors",
-    "nav-projects": "Projects",
-    "nav-career": "Careers",
+    "nav-corporate": "About Us",
+    "nav-sectors": "Services",
+    "nav-projects": "Properties",
+    "nav-reviews": "Google Reviews (4.8 ★)",
+    "nav-valuation": "Free Valuation",
     "nav-contact": "Contact",
     
-    // Home Page
-    "hero-sub": "Global Infrastructure & Engineering Group",
-    "hero-title-1": "Grand Projects",
-    "hero-title-2": "Beyond Borders",
-    "hero-desc": "We deliver world-class engineering solutions in transportation, renewable energy, mega infrastructure, and sustainable building.",
-    "hero-btn-1": "Explore Our Projects",
-    "hero-btn-2": "Who We Are",
+    "hero-sub": "Etimesgut & Ankara Real Estate and Investment Advisory",
+    "hero-title-1": "Trusted, Transparent and",
+    "hero-title-2": "The Right Investment Address",
+    "hero-desc": "Under the assurance of İlhan Kurt and Adem Gürsoy; providing honest, reliable and professional real estate solutions for residential, commercial and land investments in Etimesgut, Baglica, and Eryaman.",
+    "hero-btn-1": "Explore Our Portfolio",
+    "hero-btn-2": "Get Free Valuation",
     
-    "stat-employees-lbl": "Employees",
-    "stat-countries-lbl": "Active Countries",
-    "stat-ciro-lbl": "Annual Revenue",
-    "stat-enr-lbl": "ENR World Ranking",
+    "stat-reviews-lbl": "Google Client Reviews (4.8 ★)",
+    "stat-experience-lbl": "Years of Regional Expertise",
+    "stat-deals-lbl": "Successful Sales & Rentals",
+    "stat-trust-lbl": "Transparency & Satisfaction",
     
-    "sectors-sub": "Our Fields of Expertise",
-    "sectors-title": "Operating Sectors",
-    "sectors-btn": "All Sectors",
+    "sectors-sub": "Our Expertise",
+    "sectors-title": "Our Real Estate Services",
+    "sectors-btn": "All Services",
     
-    "sec1-title": "Transportation & Infrastructure",
-    "sec1-desc": "We build global transit networks including highways, viaducts, rail systems, airports, and deep-water ports.",
-    "sec2-title": "Industry & Energy",
-    "sec2-desc": "We fuel a sustainable future with wind, hydro, geothermal plants, and advanced industrial manufacturing complexes.",
-    "sec3-title": "Real Estate & Buildings",
-    "sec3-desc": "We develop smart city hospitals, green-certified residential spaces, and high-tech business centers.",
+    "sec1-title": "Residential Sales & Leasing",
+    "sec1-desc": "New and resale apartments, duplexes, gated residential communities and dependable tenant placements in Etimesgut.",
+    "sec2-title": "Commercial Real Estate & Shops",
+    "sec2-desc": "High-visibility retail shops, corporate-leased properties and office spaces with solid rental returns.",
+    "sec3-title": "Land & Plot Investments",
+    "sec3-desc": "Zoned residential plots, villa parcels and high-growth land investments in Baglica, Sehitali and Etimesgut corridors.",
     
-    "proj-sub": "Our Engineering Wonders",
-    "proj-title": "Featured Projects",
-    "proj-btn": "View All",
-    
-    "p1-title": "Eurasia Mega Tunnel",
-    "p1-desc": "A double-deck, seismic-resistant mega highway tunnel crossing beneath the sea to connect two continents.",
-    "p2-title": "Gordion Wind Power Plant",
-    "p2-desc": "A massive 120 MW green energy investment comprising 80 wind turbines.",
-    "p3-title": "Ege Port Terminal Expansion",
-    "p3-desc": "Construction of deep-water berths and land reclamation expanding container logistics capacity by 3x.",
-    "p4-title": "Alara Eco-Tower Residences",
-    "p4-desc": "A LEED Platinum-certified, self-powered 42-story smart residential tower.",
-    "p5-title": "Anadolu Green Cement Factory",
-    "p5-desc": "An eco-friendly integrated facility producing low-carbon cement by generating electricity from waste heat.",
-    "p6-title": "Çukurova City Hospital",
-    "p6-desc": "A 1,500-bed state-of-the-art medical complex equipped with advanced seismic base isolators.",
-    
-    // Corporate Page
-    "corp-sub": "Deep-Rooted History, Strong Future",
-    "corp-title": "Corporate Profile",
-    "corp-p1": "Zeugma Holding is a global force operating in 18 countries, ranked 38th in the ENR top international contractors list since starting its engineering journey in 1982.",
-    "corp-p2": "Named after the historic ancient city bridging two civilisations, our group aims to connect continents, societies, and dreams of the future with solid bridges. We build the civilisations of tomorrow in line with our environmental respect, safety, and sustainability values.",
-    "corp-year-lbl": "Year of Foundation",
-    "corp-proj-lbl": "Completed Projects",
-    
-    "board-sub": "Executive Leadership",
-    "board-title": "Board of Directors",
-    
-    "dir1-role": "Founder & Chairman",
-    "dir1-name": "Ahmet Zeugma",
-    "dir1-desc": "A civil engineer by background, our founder has provided visionary leadership to the group for over 40 years.",
-    
-    "dir2-role": "Vice Chair of the Board",
-    "dir2-name": "Elif Zeugma Kaya",
-    "dir2-desc": "Overseeing investment and international finance, our vice chair manages the holding's global expansion.",
-    
-    "dir3-role": "Board Member & CEO",
-    "dir3-name": "Dr. Can Demir",
-    "dir3-desc": "With 25 years of operational experience in energy and infrastructure, our CEO leads the daily operations of the holding.",
-    
-    // Timeline
-    "time-sub": "Historic Milestones",
-    "time-title": "Our Milestones of Success",
-    "time-item-1-title": "First Foundations",
-    "time-item-1-desc": "Zeugma Construction Ltd. was founded in Ankara, starting its first municipal infrastructure and sewage works.",
-    "time-item-2-title": "Industrial Turn",
-    "time-item-2-desc": "The holding successfully completed its first dam and power station project, expanding into energy contracting.",
-    "time-item-3-title": "Going Global",
-    "time-item-3-desc": "Airport and highway projects were secured simultaneously in the Middle East and Eastern Europe, taking global brand steps.",
-    "time-item-4-title": "Renewable Power Leader",
-    "time-item-4-desc": "Our renewable energy capacity hit 500 MW, launching carbon-neutral green construction site concepts.",
-    "time-item-5-title": "ENR #38",
-    "time-item-5-desc": "Rising to number 38 in the international contractors list, our holding shapes the future with 45,000 employees in 18 countries.",
-    
-    // Sectors Page
-    "sectors-page-sub": "Operational Diversity",
-    "sectors-page-title": "Our Sectors of Activity",
-    
-    "sectors-sec1-lbl": "Transportation & Infrastructure",
-    "sectors-sec1-p": "Zeugma Holding is specialized globally in transport infrastructure. Signature works include rail systems, transit tunnels, cross-continental bridges, and highly modern airport passenger terminals.",
-    "sectors-sec1-item-1": "✓ High-Speed Train & Metro Lines",
-    "sectors-sec1-item-2": "✓ Mega Tunnel & Bridge Crossings",
-    "sectors-sec1-item-3": "✓ Modern Airport Terminals",
-    "sectors-sec1-item-4": "✓ Deep-Sea Container Ports",
-    
-    "sectors-sec2-lbl": "Industry & Energy",
-    "sectors-sec2-p": "We are committed to delivering secure energy from green and renewable sources. We excel in wind, solar, hydro, and geothermal plants, alongside refineries, petrochemical complexes, and cement factories.",
-    "sectors-sec2-item-1": "✓ Wind & Solar Power Plants (WPP/SPP)",
-    "sectors-sec2-item-2": "✓ Hydroelectric Power Plants (HPP)",
-    "sectors-sec2-item-3": "✓ Waste Heat Recovery Installations",
-    "sectors-sec2-item-4": "✓ Petrochemical & Refinery Facilities",
-    
-    "sectors-sec3-lbl": "Real Estate & Buildings",
-    "sectors-sec3-p": "We design buildings that elevate the quality of life. Our portfolio focuses on state-of-the-art public-private partnership (PPP) city hospitals, luxury eco-residences, 5-star hotels, and dynamic corporate towers.",
-    "sectors-sec3-item-1": "✓ Integrated Health Campuses (PPP Hospitals)",
-    "sectors-sec3-item-2": "✓ LEED-Certified Smart Residential Towers",
-    "sectors-sec3-item-3": "✓ Luxury Hotels & Convention Centers",
-    "sectors-sec3-item-4": "✓ Commercial Towers & Shopping Plazas",
-    
-    // Projects Page
-    "projects-page-sub": "Our Engineering Portfolio",
-    "projects-page-title": "Projects",
+    "proj-sub": "Current Listings",
+    "proj-title": "Featured Real Estate",
+    "proj-btn": "View All Properties",
     "filter-all": "All",
-    "filter-transport": "Transportation & Infra",
-    "filter-energy": "Industry & Energy",
-    "filter-building": "Real Estate & Buildings",
-    "filter-completed": "Completed",
-    "filter-ongoing": "Ongoing",
     
-    // Career Page
-    "career-page-sub": "Join Our Global Team",
-    "career-page-title": "Career Opportunities",
-    "career-p": "Zeugma Holding offers employees opportunities to work on landmark international projects, accelerate career advancement, and build expertise at world-class standards.",
-    "wizard-title": "Job Application Wizard",
-    "wizard-step1-title": "Personal Info",
-    "wizard-step2-title": "Position & Experience",
-    "wizard-step3-title": "CV & Documents",
+    "corp-sub": "Established Trust, Honest Brokerage",
+    "corp-title": "About Us & Our Brokers",
+    "corp-p1": "Etimesgut Real Estate Office is a premier brokerage in Ankara dedicated to honesty, transparency and legal integrity.",
+    "corp-p2": "Described by our clients as the benchmark for traditional honest merchant values, we treat every property as if we are buying it for ourselves, disclosing every detail with zero hidden defects.",
     
-    "lbl-name": "Full Name *",
-    "lbl-email": "Email Address *",
-    "lbl-phone": "Phone Number *",
-    "lbl-position": "Applied Field / Department *",
-    "lbl-experience": "Years of Experience *",
-    "lbl-letter": "Cover Letter / Short Introduction *",
-    "lbl-cv": "Upload Your Resume",
-    "lbl-cv-formats": "Supported formats: PDF, DOCX (Max 5MB)",
-    "lbl-kvkk": "I hereby consent to the processing and storage of my personal data for the purpose of job application assessment under protection acts. *",
-    "btn-prev": "Back",
-    "btn-next": "Next",
+    "sec-page-sub": "End-to-End Solutions",
+    "sec-page-title": "Real Estate Services",
     
-    // Contact Page
-    "contact-page-sub": "Get in Touch",
-    "contact-page-title": "Contact",
-    "contact-panel-h": "Write to Us or Visit",
-    "contact-panel-p": "Feel free to reach out for general info, vendor tenders, procurement details, or press inquiries.",
-    "contact-form-h": "Send Us a Message",
-    "contact-form-subject-lbl": "Subject *",
-    "contact-form-msg-lbl": "Your Message *",
-    "contact-form-btn": "Send Message",
+    "proj-page-sub": "Exclusive Portfolio",
+    "proj-page-title": "Etimesgut Property Listings",
     
-    // Office Labels
-    "office-phone": "Phone",
+    "contact-page-sub": "We Welcome You For Coffee",
+    "contact-page-title": "Contact & Office Location",
+    "contact-panel-h": "Etimesgut Real Estate Office",
+    "contact-panel-p": "Visit our office or call us directly for property buying, selling, rentals or complimentary valuation.",
+    "office-phone": "Phone & Brokers",
     "office-address": "Address",
-    "office-email": "Email",
-    "office-map-btn": "SHOW MAP (MOCK)",
+    "contact-form-h": "Send Us a Message",
+    "contact-form-btn": "Submit Message",
     
-    // Footer & Meta labels
-    "footer-text": "Zeugma Holding is a global engineering partner building a sustainable future through expertise in transport infrastructure, industrial facilities, and renewable energy.",
-    "footer-links-title-1": "Quick Links",
-    "footer-links-title-2": "Corporate",
-    "footer-links-title-3": "Contact",
-    "footer-bottom-text": "© 2026 Zeugma Holding A.S. All rights reserved.",
-    "footer-link-usage": "Terms of Use",
-    "footer-link-privacy": "Privacy Policy",
-    
-    "modal-lbl-status": "Status:",
-    "modal-lbl-duration": "Duration:",
-    "modal-lbl-location": "Location:",
-    "modal-lbl-client": "Employer:"
+    "footer-text": "Etimesgut Real Estate Office provides dependable, transparent and expert real estate brokerage led by İlhan Kurt and Adem Gürsoy in Ankara."
   }
 };
 
@@ -944,99 +870,14 @@ function initLanguageSwitcher() {
   if (!switchBtn) return;
   
   switchBtn.addEventListener('click', () => {
-    // Toggle
     currentLang = currentLang === 'tr' ? 'en' : 'tr';
-    
-    // Update button text
     switchBtn.innerText = currentLang === 'tr' ? 'EN' : 'TR';
     
-    // Perform translation
-    translateUI();
-    
-    // Re-bind modal events and filter events so project lists adapt if updated
-    updateProjectsBadgesAndLabels();
-  });
-}
-
-function translateUI() {
-  // Elements with innerHTML/innerText i18n
-  const elements = document.querySelectorAll('[data-i18n]');
-  elements.forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    const translation = translations[currentLang][key];
-    if (translation) {
-      el.innerHTML = translation;
-    }
-  });
-  
-  // Elements with input placeholder i18n
-  const inputs = document.querySelectorAll('[data-i18n-placeholder]');
-  inputs.forEach(input => {
-    const key = input.getAttribute('data-i18n-placeholder');
-    const translation = translations[currentLang][key];
-    if (translation) {
-      input.placeholder = translation;
-    }
-  });
-  
-  // Custom updates (e.g. document titles or html metadata)
-  document.title = currentLang === 'tr' ? 'Zeugma Holding - Geleceği İnşa Ediyoruz' : 'Zeugma Holding - Shaping the Future';
-  
-  // Update wizard button dynamic texts manually if active
-  const nextBtn = document.querySelector('.btn-next');
-  if (nextBtn) {
-    const careerWizardForm = document.getElementById('career-wizard-form');
-    if (careerWizardForm) {
-      const activePane = careerWizardForm.querySelector('.wizard-pane.active');
-      const isLastStep = activePane && activePane.getAttribute('data-step') === '2';
-      if (isLastStep) {
-        nextBtn.innerText = currentLang === 'tr' ? 'Başvuruyu Tamamla' : 'Submit Application';
-      } else {
-        nextBtn.innerText = currentLang === 'tr' ? 'İleri' : 'Next';
-      }
-    }
-  }
-}
-
-function updateProjectsBadgesAndLabels() {
-  const badges = document.querySelectorAll('.project-badge');
-  badges.forEach(badge => {
-    const status = badge.parentElement.parentElement.getAttribute('data-status');
-    if (status === 'Tamamlandı') {
-      badge.innerText = currentLang === 'tr' ? 'Tamamlandı' : 'Completed';
-    } else if (status === 'Devam Ediyor') {
-      badge.innerText = currentLang === 'tr' ? 'Devam Ediyor' : 'Ongoing';
-    }
-  });
-  
-  // Translate current active office detail texts if contact details are open
-  const officeTabs = document.querySelectorAll('.office-tab');
-  const detailsTitle = document.getElementById('office-details-title');
-  if (detailsTitle) {
-    // Find active tab
-    let activeTabLoc = 'istanbul';
-    officeTabs.forEach(tab => {
-      if (tab.style.borderColor === 'var(--accent-gold)' || tab.style.borderColor === 'rgb(197, 168, 128)') {
-        activeTabLoc = tab.getAttribute('data-office');
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[currentLang] && translations[currentLang][key]) {
+        el.innerText = translations[currentLang][key];
       }
     });
-    // Trigger click or manual translation reload
-    const detailsAddr = document.getElementById('office-details-addr');
-    const officeAddrData = {
-      istanbul: {
-        tr: { title: 'İstanbul Merkez Ofis (HQ)', addr: 'Büyükdere Caddesi, No: 193, Kule 2, Levent, İstanbul' },
-        en: { title: 'Istanbul Head Office (HQ)', addr: 'Buyukdere Street, No: 193, Tower 2, Levent, Istanbul' }
-      },
-      ankara: {
-        tr: { title: 'Ankara Temsilciliği', addr: 'Dumlupınar Bulvarı, No: 9, Çankaya, Ankara' },
-        en: { title: 'Ankara Representative Office', addr: 'Dumlupinar Boulevard, No: 9, Cankaya, Ankara' }
-      },
-      baku: {
-        tr: { title: 'Bakü Operasyon Ofisi', addr: 'Nizami Caddesi, Bakü LandMark Binası, Bakü, Azerbaycan' },
-        en: { title: 'Baku Operations Office', addr: 'Nizami Street, Baku Landmark Building, Baku, Azerbaijan' }
-      }
-    };
-    detailsTitle.innerText = officeAddrData[activeTabLoc][currentLang].title;
-    detailsAddr.innerText = officeAddrData[activeTabLoc][currentLang].addr;
-  }
+  });
 }

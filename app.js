@@ -74,32 +74,42 @@ const pageToPath = {
 };
 
 function initRouter() {
-  const navLinks = document.querySelectorAll('.logo, .nav-links a, .footer-col ul a, .footer-links a, .hero-cta a, a[data-target]');
   const pages = document.querySelectorAll('.page-view');
   
-  // Read current URL pathname on startup
+  // Clean any hash from URL bar immediately on startup
   const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+  if (window.location.hash) {
+    history.replaceState(null, '', currentPath);
+  }
+  
   const initialPage = routeMap[currentPath] || 'home';
   showPage(initialPage, false);
   
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      const targetId = link.getAttribute('data-target');
-      if (targetId) {
-        e.preventDefault();
-        showPage(targetId, true);
-        
-        // Close mobile menu if open
-        const navList = document.querySelector('.nav-links');
-        const burger = document.querySelector('.burger');
-        if (navList && navList.classList.contains('nav-active')) {
-          navList.classList.remove('nav-active');
-          burger.classList.remove('toggle');
-        }
-        
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Intercept all link clicks globally to prevent '#' and route smoothly
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+    
+    const href = link.getAttribute('href');
+    if (href === '#' || href === '') {
+      e.preventDefault();
+    }
+    
+    const targetId = link.getAttribute('data-target');
+    if (targetId) {
+      e.preventDefault();
+      showPage(targetId, true);
+      
+      // Close mobile menu if open
+      const navList = document.querySelector('.nav-links');
+      const burger = document.querySelector('.burger');
+      if (navList && navList.classList.contains('nav-active')) {
+        navList.classList.remove('nav-active');
+        burger.classList.remove('toggle');
       }
-    });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   });
   
   window.addEventListener('popstate', (e) => {
@@ -132,8 +142,10 @@ function initRouter() {
     
     if (updateHistory) {
       const newPath = pageToPath[pageId] || '/';
-      if (window.location.pathname !== newPath) {
+      if (window.location.pathname !== newPath || window.location.hash) {
         history.pushState({ pageId }, '', newPath);
+      } else {
+        history.replaceState({ pageId }, '', newPath);
       }
     }
     
@@ -639,7 +651,7 @@ const translations = {
     
     "hero-title-1": "Güvenilir, Şeffaf ve",
     "hero-title-2": "Doğru Yatırımın Adresi",
-    "hero-desc": "İlhan Kurt ve Adem Gürsoy güvencesiyle; Etimesgut, Bağlıca, Eryaman ve tüm Ankara aksında satılık ve kiralık konut, ticari mülk ve yatırımlık arsalarda dürüst esnaflık ve profesyonel danışmanlık.",
+    "hero-desc": "İlhan Kurt ve Adem Gürsoy güvencesiyle; Etimesgut, Bağlıca, Eryaman ve tüm Ankara aksında satılık ve kiralık konut, ticari mülk ve yatırımlık arsalarda dürüst esnaflık ve profesyonel\u00A0danışmanlık.",
     "hero-btn-1": "Portföyümüzü İnceleyin",
     "hero-btn-2": "Bize Ulaşın",
     

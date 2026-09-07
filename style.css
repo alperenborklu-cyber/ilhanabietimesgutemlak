@@ -453,9 +453,11 @@ main {
 
 .hero-text p {
   color: var(--text-secondary);
-  font-size: 1.25rem;
-  max-width: 600px;
+  font-size: 1.2rem;
+  line-height: 1.65;
+  max-width: 720px;
   margin-bottom: 2.5rem;
+  text-wrap: pretty;
 }
 
 .hero-cta {

@@ -1966,43 +1966,6 @@ footer {
   transform: scale(1.08);
 }
 
-/* VALUATION WIZARD STYLES */
-.val-pill-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.val-pill-card {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  padding: 1.5rem 1rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.val-pill-card:hover,
-.val-pill-card.selected {
-  border-color: var(--accent-gold);
-  background-color: var(--accent-gold-light);
-  transform: translateY(-2px);
-}
-
-.val-pill-icon {
-  font-size: 1.75rem;
-  margin-bottom: 0.5rem;
-}
-
-.val-pill-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--text-primary);
-}
-
 /* FLOATING WHATSAPP & PHONE WIDGET */
 .floating-contact-widget {
   position: fixed;

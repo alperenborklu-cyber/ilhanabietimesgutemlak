@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollHeader();
   initStatsObserver();
   initProjectFilters();
-  initValuationWizard();
   initContactForm();
   initModals();
   initFloatingWidget();
@@ -216,170 +215,6 @@ function initProjectFilters() {
       });
     });
   });
-}
-
-// 7. REAL ESTATE VALUATION WIZARD
-function initValuationWizard() {
-  const wizard = document.getElementById('valuation-wizard-form');
-  if (!wizard) return;
-  
-  const panes = wizard.querySelectorAll('.wizard-pane');
-  const nodes = document.querySelectorAll('.wizard-step-node');
-  const stepLine = document.querySelector('.wizard-step-line');
-  const nextBtn = wizard.querySelector('.btn-next');
-  const prevBtn = wizard.querySelector('.btn-prev');
-  
-  // Property type selector cards in Step 0
-  const typePills = wizard.querySelectorAll('.val-pill-card');
-  const typeInput = document.getElementById('val-property-type');
-  
-  typePills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      typePills.forEach(p => p.classList.remove('selected'));
-      pill.classList.add('selected');
-      if (typeInput) {
-        typeInput.value = pill.getAttribute('data-type');
-      }
-    });
-  });
-  
-  let currentStep = 0;
-  updateWizard();
-  
-  nextBtn.addEventListener('click', () => {
-    if (validateStep(currentStep)) {
-      if (currentStep < panes.length - 1) {
-        currentStep++;
-        updateWizard();
-      } else {
-        submitValuation();
-      }
-    }
-  });
-  
-  prevBtn.addEventListener('click', () => {
-    if (currentStep > 0) {
-      currentStep--;
-      updateWizard();
-    }
-  });
-  
-  function updateWizard() {
-    panes.forEach((pane, idx) => {
-      if (idx === currentStep) {
-        pane.classList.add('active');
-        pane.style.display = 'block';
-      } else {
-        pane.classList.remove('active');
-        pane.style.display = 'none';
-      }
-    });
-    
-    nodes.forEach((node, idx) => {
-      if (idx < currentStep) {
-        node.className = 'wizard-step-node completed';
-        node.innerHTML = '✓';
-      } else if (idx === currentStep) {
-        node.className = 'wizard-step-node active';
-        node.innerHTML = idx + 1;
-      } else {
-        node.className = 'wizard-step-node';
-        node.innerHTML = idx + 1;
-      }
-    });
-    
-    const percentage = (currentStep / (panes.length - 1)) * 100;
-    if (stepLine) stepLine.style.width = percentage + '%';
-    
-    if (currentStep === 0) {
-      prevBtn.style.visibility = 'hidden';
-    } else {
-      prevBtn.style.visibility = 'visible';
-    }
-    
-    if (currentStep === panes.length - 1) {
-      nextBtn.innerText = currentLang === 'tr' ? 'Değerleme Talebini Tamamla' : 'Submit Valuation Request';
-    } else {
-      nextBtn.innerText = currentLang === 'tr' ? 'İleri' : 'Next';
-    }
-  }
-  
-  function validateStep(stepIdx) {
-    const activePane = panes[stepIdx];
-    const inputs = activePane.querySelectorAll('input[required], select[required], textarea[required]');
-    let isValid = true;
-    
-    inputs.forEach(input => {
-      if (!input.value.trim()) {
-        isValid = false;
-        input.style.borderColor = '#ef4444';
-        input.addEventListener('input', () => {
-          input.style.borderColor = 'var(--glass-border)';
-        }, { once: true });
-      }
-    });
-    
-    if (!isValid) {
-      alert(currentLang === 'tr' ? 'Lütfen tüm zorunlu alanları doldurunuz.' : 'Please fill in all required fields.');
-    }
-    
-    return isValid;
-  }
-  
-  function submitValuation() {
-    const intent = document.getElementById('val-intent')?.value || 'Belirtilmedi';
-    const propType = document.getElementById('val-property-type')?.value || 'Daire';
-    const neighborhood = document.getElementById('val-neighborhood')?.value || 'Etimesgut';
-    const rooms = document.getElementById('val-rooms')?.value || '';
-    const area = document.getElementById('val-area')?.value || '';
-    const floor = document.getElementById('val-floor')?.value || '';
-    const age = document.getElementById('val-age')?.value || '';
-    const priceExp = document.getElementById('val-price-expectation')?.value || 'Belirtilmedi';
-    const deed = document.getElementById('val-deed-status')?.value || '';
-    const notes = document.getElementById('val-notes')?.value || '';
-    const name = document.getElementById('val-name')?.value || 'Müşteri';
-    const phone = document.getElementById('val-phone')?.value || '';
-    const channel = document.getElementById('val-channel')?.value || 'WhatsApp';
-    
-    const waText = encodeURIComponent(
-      `*ETİMESGUT EMLAK OFİSİ - DEĞERLEME TALEBİ*\n` +
-      `--------------------------------\n` +
-      `👤 *Müşteri:* ${name}\n` +
-      `📞 *Telefon:* ${phone}\n` +
-      `🎯 *İşlem:* ${intent}\n` +
-      `🏠 *Mülk Tipi:* ${propType}\n` +
-      `📍 *Konum:* ${neighborhood}\n` +
-      `🛏 *Oda / m²:* ${rooms} - ${area} m²\n` +
-      `🏢 *Kat / Bina Yaşı:* ${floor} / ${age}\n` +
-      `💰 *Fiyat Beklentisi:* ${priceExp}\n` +
-      `📜 *Tapu Durumu:* ${deed}\n` +
-      `📝 *Notlar:* ${notes}\n` +
-      `📲 *İletişim Tercihi:* ${channel}`
-    );
-    
-    const waUrl = `https://wa.me/905418510600?text=${waText}`;
-    
-    const container = document.querySelector('.wizard-container');
-    container.innerHTML = `
-      <div style="text-align: center; padding: 3rem 1.5rem;" class="fade-in-section">
-        <div style="font-size: 4rem; color: #25D366; margin-bottom: 1.5rem;">✓</div>
-        <h3 style="font-size: 1.8rem; text-transform: uppercase; margin-bottom: 1rem; color: var(--text-primary);">
-          ${currentLang === 'tr' ? 'Değerleme Talebiniz Hazırlandı' : 'Valuation Request Prepared'}
-        </h3>
-        <p style="color: var(--text-secondary); max-width: 540px; margin: 0 auto 2rem auto; line-height: 1.6;">
-          ${currentLang === 'tr'
-            ? `Sayın <strong>${name}</strong>, bilgileriniz kaydedildi. İlhan Kurt ve Adem Gürsoy'a bilgilerinizi doğrudan WhatsApp üzerinden ileterek anında ön ekspertiz alabilirsiniz:`
-            : `Dear <strong>${name}</strong>, your details are registered. You can directly send them via WhatsApp for instant pre-valuation:`}
-        </p>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-          <a href="${waUrl}" target="_blank" class="btn-broker-wa" style="padding: 0.85rem 1.75rem; font-size: 1rem; border-radius: 4px;">
-            <span>💬</span> ${currentLang === 'tr' ? "WhatsApp'tan Hemen Gönder" : 'Send via WhatsApp'}
-          </a>
-          <button class="btn btn-secondary" onclick="location.reload()">${currentLang === 'tr' ? 'Yeni Talep Oluştur' : 'Create New Request'}</button>
-        </div>
-      </div>
-    `;
-  }
 }
 
 // 8. CONTACT FORM
@@ -752,7 +587,6 @@ const translations = {
     "nav-sectors": "Hizmetlerimiz",
     "nav-projects": "Portföyümüz",
     "nav-reviews": "Google Yorumları (4.8 ★)",
-    "nav-valuation": "Ücretsiz Değerleme",
     "nav-contact": "İletişim",
     
     "hero-sub": "Etimesgut & Çevresi Gayrimenkul ve Yatırım Danışmanlığı",
@@ -760,7 +594,7 @@ const translations = {
     "hero-title-2": "Doğru Yatırımın Adresi",
     "hero-desc": "İlhan Kurt ve Adem Gürsoy güvencesiyle; Etimesgut, Bağlıca, Eryaman ve tüm Ankara aksında satılık ve kiralık konut, ticari mülk ve yatırımlık arsalarda dürüst esnaflık ve profesyonel danışmanlık.",
     "hero-btn-1": "Portföyümüzü İnceleyin",
-    "hero-btn-2": "Ücretsiz Değerleme Alın",
+    "hero-btn-2": "Bize Ulaşın",
     
     "stat-reviews-lbl": "Google Müşteri Yorumu (4.8 ★)",
     "stat-experience-lbl": "Yıllık Bölge Uzmanlığı",
@@ -810,7 +644,6 @@ const translations = {
     "nav-sectors": "Services",
     "nav-projects": "Properties",
     "nav-reviews": "Google Reviews (4.8 ★)",
-    "nav-valuation": "Free Valuation",
     "nav-contact": "Contact",
     
     "hero-sub": "Etimesgut & Ankara Real Estate and Investment Advisory",
@@ -818,7 +651,7 @@ const translations = {
     "hero-title-2": "The Right Investment Address",
     "hero-desc": "Under the assurance of İlhan Kurt and Adem Gürsoy; providing honest, reliable and professional real estate solutions for residential, commercial and land investments in Etimesgut, Baglica, and Eryaman.",
     "hero-btn-1": "Explore Our Portfolio",
-    "hero-btn-2": "Get Free Valuation",
+    "hero-btn-2": "Contact Us",
     
     "stat-reviews-lbl": "Google Client Reviews (4.8 ★)",
     "stat-experience-lbl": "Years of Regional Expertise",

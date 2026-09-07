@@ -41,7 +41,6 @@
         <li><a href="#" data-target="sectors" data-i18n="nav-sectors">Hizmetlerimiz</a></li>
         <li><a href="#" data-target="projects" data-i18n="nav-projects">Portföyümüz</a></li>
         <li><a href="#" data-target="reviews" data-i18n="nav-reviews">Google Yorumları (4.8 ★)</a></li>
-        <li><a href="#" data-target="valuation" data-i18n="nav-valuation">Ücretsiz Değerleme</a></li>
         <li><a href="#" data-target="contact" data-i18n="nav-contact">İletişim</a></li>
       </ul>
       <div class="header-right">
@@ -79,7 +78,7 @@
             <p data-i18n="hero-desc">İlhan Kurt ve Adem Gürsoy güvencesiyle; Etimesgut, Bağlıca, Eryaman ve tüm Ankara aksında satılık ve kiralık konut, ticari mülk ve yatırımlık arsalarda dürüst esnaflık ve profesyonel danışmanlık.</p>
             <div class="hero-cta">
               <a href="#" data-target="projects" class="btn btn-primary" data-i18n="hero-btn-1">Portföyümüzü İnceleyin</a>
-              <a href="#" data-target="valuation" class="btn btn-secondary" data-i18n="hero-btn-2">Ücretsiz Değerleme Alın</a>
+              <a href="#" data-target="contact" class="btn btn-secondary" data-i18n="hero-btn-2">Bize Ulaşın</a>
               <a href="https://wa.me/905418510600?text=Merhaba,%20Etimesgut%20Emlak%20Ofisi%20ile%20gorusmek%20istiyorum." target="_blank" class="btn-broker-wa" style="padding: 0.85rem 1.6rem; border-radius: 4px; font-family: var(--font-title); font-size: 0.95rem;">
                 WhatsApp'tan Yazın
               </a>
@@ -1273,180 +1272,6 @@
 
     </section>
 
-    <!-- ==================== ÜCRETSİZ DEĞERLEME (VALUATION WIZARD) ==================== -->
-    <section id="valuation" class="page-view fade-in-section" style="display: none;">
-      
-      <div class="form-section">
-        <div class="section-container">
-          <div class="section-title">
-            <span class="section-subtitle">Piyasa Analizi & Hızlı Satış</span>
-            <h2>Ücretsiz Gayrimenkul Değerleme</h2>
-          </div>
-          
-          <div class="wizard-container">
-            <div class="wizard-steps">
-              <div class="wizard-step-line"></div>
-              <div class="wizard-step-node active" data-step="0">1</div>
-              <div class="wizard-step-node" data-step="1">2</div>
-              <div class="wizard-step-node" data-step="2">3</div>
-              <div class="wizard-step-node" data-step="3">4</div>
-            </div>
-
-            <form id="valuation-wizard-form">
-              
-              <!-- STEP 0: Gayrimenkul Türü ve Amaç -->
-              <div class="wizard-pane active" data-pane="0">
-                <h3 style="font-size: 1.5rem; text-transform: uppercase; margin-bottom: 1.5rem;">İşlem ve Mülk Türünü Seçiniz</h3>
-                
-                <div class="form-group">
-                  <label>İşlem Amacınız *</label>
-                  <select id="val-intent" class="form-control" required>
-                    <option value="satmak">Mülkümü Satmak İstiyorum</option>
-                    <option value="kiralamak">Mülkümü Kiraya Vermek İstiyorum</option>
-                    <option value="degerleme">Yalnızca Değerini / Rayicini Öğrenmek İstiyorum</option>
-                  </select>
-                </div>
-
-                <label style="display: block; font-family: var(--font-title); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.75rem; color: var(--text-secondary);">
-                  Gayrimenkul Tipi *
-                </label>
-                <div class="val-pill-grid">
-                  <div class="val-pill-card selected" data-type="daire">
-                    <div class="val-pill-icon">🏢</div>
-                    <div class="val-pill-title">Daire / Konut</div>
-                  </div>
-                  <div class="val-pill-card" data-type="villa">
-                    <div class="val-pill-icon">🏡</div>
-                    <div class="val-pill-title">Dubleks / Villa</div>
-                  </div>
-                  <div class="val-pill-card" data-type="dukkan">
-                    <div class="val-pill-icon">🏬</div>
-                    <div class="val-pill-title">Dükkan / Ticari</div>
-                  </div>
-                  <div class="val-pill-card" data-type="arsa">
-                    <div class="val-pill-icon">📐</div>
-                    <div class="val-pill-title">Arsa / Tarla</div>
-                  </div>
-                </div>
-                <input type="hidden" id="val-property-type" value="daire">
-              </div>
-
-              <!-- STEP 1: Lokasyon ve Mülk Özellikleri -->
-              <div class="wizard-pane" data-pane="1">
-                <h3 style="font-size: 1.5rem; text-transform: uppercase; margin-bottom: 1.5rem;">Lokasyon & Mülk Detayları</h3>
-                <div class="form-group">
-                  <label for="val-neighborhood">Bulunduğu Mahalle / Bölge *</label>
-                  <select id="val-neighborhood" class="form-control" required>
-                    <option value="">Seçiniz...</option>
-                    <option value="İstasyon Mahallesi">İstasyon Mahallesi</option>
-                    <option value="Bağlıca Mahallesi">Bağlıca Mahallesi</option>
-                    <option value="Eryaman Mahallesi">Eryaman Mahallesi</option>
-                    <option value="Alsancak Mahallesi">Alsancak Mahallesi</option>
-                    <option value="Süvari Mahallesi">Süvari Mahallesi</option>
-                    <option value="Elvankent">Elvankent</option>
-                    <option value="Ahi Mesut Mahallesi">Ahi Mesut Mahallesi</option>
-                    <option value="Ayyıldız Mahallesi">Ayyıldız Mahallesi</option>
-                    <option value="Piyade Mahallesi">Piyade Mahallesi</option>
-                    <option value="30 Ağustos Mahallesi">30 Ağustos Mahallesi</option>
-                    <option value="Şehit Osman Avcı">Şehit Osman Avcı</option>
-                    <option value="Diğer / Etimesgut Çevresi">Diğer / Etimesgut Çevresi</option>
-                  </select>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                  <div class="form-group">
-                    <label for="val-rooms">Oda Sayısı *</label>
-                    <select id="val-rooms" class="form-control" required>
-                      <option value="1+1">1+1</option>
-                      <option value="2+1">2+1</option>
-                      <option value="3+1" selected>3+1</option>
-                      <option value="4+1">4+1</option>
-                      <option value="5+1 ve üzeri">5+1 ve üzeri</option>
-                      <option value="Dükkan / Ticari Alan">Dükkan / Ticari Alan</option>
-                      <option value="Arsa / Parsel">Arsa / Parsel</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="val-area">Net Metrekare (m²) *</label>
-                    <input type="number" id="val-area" class="form-control" placeholder="Örn: 130" required>
-                  </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                  <div class="form-group">
-                    <label for="val-floor">Bulunduğu Kat</label>
-                    <input type="text" id="val-floor" class="form-control" placeholder="Örn: 3. Kat / Ara Kat">
-                  </div>
-                  <div class="form-group">
-                    <label for="val-age">Bina Yaşı</label>
-                    <select id="val-age" class="form-control">
-                      <option value="0 (Sıfır)">0 (Sıfır Bina)</option>
-                      <option value="1-5 Yaş">1 - 5 Yaş</option>
-                      <option value="6-10 Yaş">6 - 10 Yaş</option>
-                      <option value="11-20 Yaş">11 - 20 Yaş</option>
-                      <option value="20+ Yaş">20+ Yaş</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <!-- STEP 2: Fiyat ve Beklenti -->
-              <div class="wizard-pane" data-pane="2">
-                <h3 style="font-size: 1.5rem; text-transform: uppercase; margin-bottom: 1.5rem;">Fiyat Beklentisi & Notlar</h3>
-                <div class="form-group">
-                  <label for="val-price-expectation">Varsa Düşündüğünüz Fiyat Beklentisi (TL)</label>
-                  <input type="text" id="val-price-expectation" class="form-control" placeholder="Örn: 3.750.000 TL (Emin değilseniz boş bırakabilirsiniz)">
-                </div>
-                <div class="form-group">
-                  <label for="val-deed-status">Tapu / İskan Durumu</label>
-                  <select id="val-deed-status" class="form-control">
-                    <option value="Kat Mülkiyetli (İskanlı)">Kat Mülkiyetli (İskanlı)</option>
-                    <option value="Kat İrtifaklı">Kat İrtifaklı</option>
-                    <option value="Müstakil Tapu (Arsa)">Müstakil Tapu (Arsa)</option>
-                    <option value="Hisseli Tapu">Hisseli Tapu</option>
-                    <option value="Bilinmiyor">Bilinmiyor</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="val-notes">Mülk Hakkında Eklemek İstedikleriniz</label>
-                  <textarea id="val-notes" class="form-control" placeholder="Örn: Güney cephe, mutfak yenilendi, kapalı otoparkı var, acil satılık..."></textarea>
-                </div>
-              </div>
-
-              <!-- STEP 3: İletişim Bilgileri -->
-              <div class="wizard-pane" data-pane="3">
-                <h3 style="font-size: 1.5rem; text-transform: uppercase; margin-bottom: 1.5rem;">İletişim Bilgileriniz</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
-                  Ekspertiz değerleme raporu İlhan Kurt veya Adem Gürsoy tarafından hazırlanarak belirttiğiniz kanaldan size iletilecektir.
-                </p>
-                <div class="form-group">
-                  <label for="val-name">Adınız Soyadınız *</label>
-                  <input type="text" id="val-name" class="form-control" placeholder="Adınız Soyadınız *" required>
-                </div>
-                <div class="form-group">
-                  <label for="val-phone">Telefon Numaranız *</label>
-                  <input type="tel" id="val-phone" class="form-control" placeholder="05XX XXX XX XX *" required>
-                </div>
-                <div class="form-group">
-                  <label for="val-channel">Rapor İletişim Tercihiniz</label>
-                  <select id="val-channel" class="form-control">
-                    <option value="WhatsApp">WhatsApp Üzerinden Bilgilendirme İstiyorum</option>
-                    <option value="Telefon">Telefonla Aranmak İstiyorum</option>
-                    <option value="Ofis">Ofisinize Kahveye Gelerek Görüşmek İstiyorum</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="wizard-buttons">
-                <button type="button" class="btn btn-secondary btn-prev" style="visibility: hidden;">Geri</button>
-                <button type="button" class="btn btn-primary btn-next">İleri</button>
-              </div>
-
-            </form>
-          </div>
-        </div>
-      </div>
-
-    </section>
-
     <!-- ==================== İLETİŞİM (CONTACT) ==================== -->
     <section id="contact" class="page-view fade-in-section" style="display: none;">
       
@@ -1679,7 +1504,7 @@
             <li><a href="#" data-target="sectors" data-i18n="nav-sectors">Hizmetlerimiz</a></li>
             <li><a href="#" data-target="projects" data-i18n="nav-projects">Portföy / İlanlar</a></li>
             <li><a href="#" data-target="reviews">Google Yorumları (4.8 ★)</a></li>
-            <li><a href="#" data-target="valuation">Ücretsiz Değerleme</a></li>
+            <li><a href="#" data-target="contact" data-i18n="nav-contact">İletişim</a></li>
           </ul>
         </div>
 

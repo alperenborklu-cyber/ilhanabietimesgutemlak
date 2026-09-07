@@ -1309,23 +1309,32 @@ footer {
 }
 
 .social-icon {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--glass-border);
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(197, 168, 128, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
+  color: var(--accent-gold);
   transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.social-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  transition: transform var(--transition-fast);
 }
 
 .social-icon:hover {
   background-color: var(--accent-gold);
-  color: var(--bg-primary);
+  color: #0b0f17;
   border-color: var(--accent-gold);
   transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(197, 168, 128, 0.35);
 }
 
 .footer-bottom {

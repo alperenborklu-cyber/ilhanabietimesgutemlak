@@ -139,12 +139,15 @@ function initRouter() {
     if (!targetPage) return;
     
     // If user is already on this page (e.g. clicking logo while on homepage),
-    // do NOT hide/re-show the page to avoid any video re-render or layout flicker!
+    // smooth-scroll to top without touching DOM or unmounting anything
     if (currentPageId === pageId) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     currentPageId = pageId;
+
+    // Immediately reset scroll position to 0 so the new page renders cleanly at top
+    window.scrollTo(0, 0);
 
     pages.forEach(page => {
       page.style.display = 'none';
@@ -152,9 +155,8 @@ function initRouter() {
     });
     
     targetPage.style.display = 'block';
-    setTimeout(() => {
-      targetPage.classList.add('fade-in-section');
-    }, 40);
+    void targetPage.offsetWidth; // Force synchronous reflow
+    targetPage.classList.add('fade-in-section');
     
     document.querySelectorAll('.nav-links a').forEach(a => {
       if (a.getAttribute('data-target') === pageId) {
@@ -172,8 +174,6 @@ function initRouter() {
         history.replaceState({ pageId }, '', newPath);
       }
     }
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (pageId === 'home') {
       resetStats();

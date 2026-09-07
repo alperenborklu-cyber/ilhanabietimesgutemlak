@@ -30,10 +30,19 @@
   --transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+:focus,
+:focus-visible,
+:focus:not(:focus-visible) {
+  outline: none !important;
 }
 
 html {
@@ -67,10 +76,23 @@ body {
   background: var(--accent-gold);
 }
 
-a {
+a,
+button {
   color: inherit;
   text-decoration: none;
   transition: color var(--transition-fast);
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+a:focus,
+a:focus-visible,
+a:active,
+button:focus,
+button:focus-visible,
+button:active {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -170,6 +192,15 @@ header {
   background-color: rgba(4, 8, 16, 0.8);
   border-bottom: 1px solid var(--glass-border);
   transition: all var(--transition-fast);
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+header *,
+.nav-container,
+.nav-container * {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
 }
 
 .nav-container {
@@ -194,16 +225,29 @@ header.scrolled .nav-container {
   padding: 0.5rem 2.5rem;
 }
 
-.logo {
+.logo,
+.logo:hover,
+.logo:focus,
+.logo:focus-visible,
+.logo:active,
+.logo:visited {
   font-family: var(--font-title);
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  text-decoration: none;
+  text-decoration: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
   flex-shrink: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent !important;
 }
 
-.logo-img {
+.logo-img,
+.logo-img:focus,
+.logo-img:focus-visible,
+.logo-img:active {
   width: 36px;
   height: 36px;
   object-fit: contain;
@@ -214,6 +258,10 @@ header.scrolled .nav-container {
   box-shadow: 0 0 10px rgba(197, 168, 128, 0.3);
   transition: transform var(--transition-fast);
   flex-shrink: 0;
+  outline: none !important;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent !important;
 }
 
 .logo:hover .logo-img {

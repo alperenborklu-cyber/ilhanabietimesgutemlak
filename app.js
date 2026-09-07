@@ -98,6 +98,15 @@ function initRouter() {
     const targetId = link.getAttribute('data-target');
     if (targetId) {
       e.preventDefault();
+      
+      // Instantly drop DOM focus so browser never paints a focus outline/ring
+      try {
+        if (typeof link.blur === 'function') link.blur();
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+          document.activeElement.blur();
+        }
+      } catch (err) {}
+      
       showPage(targetId, true);
       
       // Close mobile menu if open

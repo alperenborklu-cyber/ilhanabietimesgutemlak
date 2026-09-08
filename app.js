@@ -239,23 +239,33 @@ function initStatsObserver() {
 
 function animateStats() {
   const statNumbers = document.querySelectorAll('.stat-number');
+  const duration = 3500; // Sayıların rahatça okunabilmesi için 3.5 saniye
+  
   statNumbers.forEach(stat => {
     const target = parseInt(stat.getAttribute('data-val'), 10);
     const suffix = stat.getAttribute('data-suffix') || '';
     if (isNaN(target)) return;
     
-    let current = 0;
-    const duration = 1500;
-    const stepTime = Math.max(Math.floor(duration / target), 15);
+    let startTimestamp = null;
     
-    const counter = setInterval(() => {
-      current += Math.ceil(target / (duration / stepTime));
-      if (current >= target) {
-        current = target;
-        clearInterval(counter);
-      }
+    function step(timestamp) {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      
+      // Yumuşak ve dengeli yavaşlama (easeOutQuad)
+      const easeOut = 1 - (1 - progress) * (1 - progress);
+      const current = Math.floor(easeOut * target);
+      
       stat.innerHTML = current.toLocaleString(currentLang === 'tr' ? 'tr-TR' : 'en-US') + `<span>${suffix}</span>`;
-    }, stepTime);
+      
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        stat.innerHTML = target.toLocaleString(currentLang === 'tr' ? 'tr-TR' : 'en-US') + `<span>${suffix}</span>`;
+      }
+    }
+    
+    requestAnimationFrame(step);
   });
 }
 

@@ -732,7 +732,7 @@ const translations = {
     "nav-contact": "Contact",
     
     "hero-title-1": "Trusted, Transparent and",
-    "hero-title-2": "The Right Investment Address",
+    "hero-title-2": "The RIGHT Investment Address",
     "hero-desc": "Under the assurance of İlhan Kurt and Adem Gürsoy; providing honest, reliable and professional real estate solutions for residential, commercial and land investments in Etimesgut, Baglica, and Eryaman.",
     "hero-btn-1": "Explore Our Portfolio",
     "hero-btn-2": "Contact Us",

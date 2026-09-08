@@ -670,7 +670,7 @@ const translations = {
     "nav-corporate": "Kurumsal",
     "nav-sectors": "Hizmetlerimiz",
     "nav-projects": "Portföyümüz",
-    "nav-reviews": "Google Yorumları (4.8 ★)",
+    "nav-reviews": "Google Yorumları",
     "nav-blog": "Blog",
     "nav-contact": "İletişim",
     
@@ -727,7 +727,7 @@ const translations = {
     "nav-corporate": "About Us",
     "nav-sectors": "Services",
     "nav-projects": "Properties",
-    "nav-reviews": "Google Reviews (4.8 ★)",
+    "nav-reviews": "Google Reviews",
     "nav-blog": "Blog",
     "nav-contact": "Contact",
     

@@ -176,7 +176,7 @@
   ]
 }
   </script>
-  <link rel="stylesheet" href="style.css?v=9.0">
+  <link rel="stylesheet" href="style.css?v=10.1">
 </head>
 <body>
 
@@ -2213,6 +2213,10 @@
                 <label for="admin-pass">Şifre</label>
                 <input type="password" id="admin-pass" class="admin-input" placeholder="••••••••" required autocomplete="current-password">
               </div>
+              <div class="admin-remember-row">
+                <input type="checkbox" id="admin-remember" checked>
+                <label for="admin-remember">Beni hatırla (Oturumu açık tut)</label>
+              </div>
               <button type="submit" class="admin-btn admin-btn-primary">
                 <span>Giriş Yap</span> ➔
               </button>
@@ -2226,13 +2230,16 @@
           <div class="admin-dashboard-header">
             <div class="admin-dashboard-title-grp">
               <h2>
-                <span>✍️ Blog Yönetim Paneli</span>
+                <span>✍️ Blog & İçerik Yönetim Paneli</span>
                 <span class="admin-post-count-badge" id="admin-post-count">0 Yazı</span>
               </h2>
             </div>
             <div class="admin-dashboard-actions">
               <button type="button" class="admin-btn admin-btn-action admin-btn-add" onclick="openAdminCreateModal()">
                 <span>➕ Yeni Blog Yazısı Ekle</span>
+              </button>
+              <button type="button" class="admin-btn admin-btn-action admin-btn-backup" onclick="openAdminPasswordModal()" title="Yönetici şifresini değiştir">
+                <span>🔑 Şifre Değiştir</span>
               </button>
               <button type="button" class="admin-btn admin-btn-action admin-btn-backup" onclick="exportAdminBlogData()" title="Blog verilerini JSON olarak bilgisayarınıza indirin">
                 <span>📥 JSON Yedek Al</span>
@@ -2324,8 +2331,39 @@
         </div>
 
         <div class="admin-form-group">
-          <label for="admin-form-img">Kapak Görseli URL veya Dosya Yolu *</label>
-          <input type="text" id="admin-form-img" class="admin-input" placeholder="images/etimesgut-ev-alirken-dikkat-edilecekler.webp veya https://..." required>
+          <label>Kapak Görseli * (Fotoğraf Yükle veya Dosya Yolu Belirt)</label>
+          
+          <!-- File Upload Dropzone -->
+          <div class="admin-file-upload-wrap" id="admin-dropzone">
+            <input type="file" id="admin-form-file" accept="image/*" onchange="handleAdminFileSelect(this)">
+            <span class="admin-upload-icon">📷</span>
+            <div class="admin-upload-text">Bilgisayarınızdan veya Telefonunuzdan Fotoğraf Seçin</div>
+            <div class="admin-upload-subtext">JPEG, PNG, WebP desteklenir. Otomatik optimize edilerek güvenle kaydedilir.</div>
+          </div>
+
+          <!-- Live Image Preview Box -->
+          <div class="admin-img-preview-box" id="admin-preview-wrap">
+            <img id="admin-img-preview" src="" alt="Görsel Önizleme">
+            <div class="admin-preview-info">
+              <span id="admin-preview-status">✅ Görsel hazır</span>
+              <button type="button" class="admin-remove-img-btn" onclick="clearAdminImg()">Kaldır / Başka Seç</button>
+            </div>
+          </div>
+
+          <!-- Manual URL / Path Input -->
+          <div style="margin-top: 0.75rem;">
+            <input type="text" id="admin-form-img" class="admin-input" placeholder="images/etimesgut-ev-alirken-dikkat-edilecekler.webp veya https://..." oninput="updateAdminImgFromUrl(this.value)" required>
+          </div>
+
+          <!-- Quick Preset Gallery Toggle -->
+          <div style="margin-top: 0.5rem;">
+            <button type="button" class="admin-preset-toggle-btn" onclick="togglePresetGallery()">
+              🖼️ Hazır Ofis Görsellerinden Hızlıca Seç ▾
+            </button>
+            <div class="admin-preset-grid" id="admin-preset-gallery" style="display: none;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
         </div>
 
         <div class="admin-form-group">
@@ -2334,16 +2372,54 @@
         </div>
 
         <div class="admin-form-group">
-          <label for="admin-form-content">Detaylı Makale İçeriği (HTML / Paragraflar) *</label>
-          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.4rem;">
-            Başlıklar için <code>&lt;h3&gt;Başlık&lt;/h3&gt;</code>, paragraflar için <code>&lt;p&gt;Metin&lt;/p&gt;</code>, listeler için <code>&lt;ul&gt;&lt;li&gt;Madde&lt;/li&gt;&lt;/ul&gt;</code> kullanabilirsiniz.
-          </p>
-          <textarea id="admin-form-content" class="admin-input" rows="9" placeholder="<p>Giriş paragrafı...</p><h3>1. Alt Başlık</h3><p>Detaylı açıklama...</p>" required></textarea>
+          <label for="admin-form-content">Detaylı Makale İçeriği *</label>
+          
+          <!-- Rich-Text Formatting Helper Buttons -->
+          <div class="admin-editor-toolbar">
+            <button type="button" class="admin-editor-btn" onclick="insertEditorTag('h3')">➕ Alt Başlık (H3)</button>
+            <button type="button" class="admin-editor-btn" onclick="insertEditorTag('p')">📝 Paragraf (P)</button>
+            <button type="button" class="admin-editor-btn" onclick="insertEditorTag('b')">𝗕 Kalın</button>
+            <button type="button" class="admin-editor-btn" onclick="insertEditorTag('ul')">📋 Liste</button>
+            <button type="button" class="admin-editor-btn" onclick="insertEditorTag('wa')">💬 WhatsApp Butonu</button>
+            <button type="button" class="admin-editor-btn" onclick="insertEditorTag('clear')">🧹 Temizle</button>
+          </div>
+
+          <textarea id="admin-form-content" class="admin-input" rows="9" placeholder="Makale içeriğini yazın. Paragraf ve alt başlık eklemek için yukarıdaki butonları kullanabilirsiniz..." required></textarea>
         </div>
 
         <div class="admin-modal-footer">
           <button type="button" class="admin-btn admin-btn-backup" onclick="closeAdminBlogModal()">Vazgeç</button>
           <button type="submit" class="admin-btn admin-btn-primary" style="width: auto;">💾 Değişiklikleri Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN PASSWORD CHANGE MODAL -->
+  <div id="admin-password-modal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeAdminPasswordModal()"></div>
+    <div class="modal-container admin-modal-container" style="max-width: 480px;">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title">🔑 Yönetici Şifresini Değiştir</h3>
+        <button class="modal-close" onclick="closeAdminPasswordModal()" aria-label="Kapat">&times;</button>
+      </div>
+      <form id="admin-password-form" onsubmit="event.preventDefault(); handleAdminChangePassword();">
+        <div class="admin-form-group">
+          <label for="admin-current-pass">Mevcut Şifre</label>
+          <input type="password" id="admin-current-pass" class="admin-input" placeholder="Mevcut şifreniz" required autocomplete="current-password">
+        </div>
+        <div class="admin-form-group">
+          <label for="admin-new-pass">Yeni Şifre</label>
+          <input type="password" id="admin-new-pass" class="admin-input" placeholder="Yeni şifreniz (en az 6 karakter)" required minlength="6" autocomplete="new-password">
+        </div>
+        <div class="admin-form-group">
+          <label for="admin-confirm-pass">Yeni Şifre (Tekrar)</label>
+          <input type="password" id="admin-confirm-pass" class="admin-input" placeholder="Yeni şifrenizi tekrar yazın" required minlength="6" autocomplete="new-password">
+        </div>
+        <div id="admin-pass-alert" class="admin-alert admin-alert-error" style="display: none;"></div>
+        <div class="admin-modal-footer">
+          <button type="button" class="admin-btn admin-btn-backup" onclick="closeAdminPasswordModal()">Vazgeç</button>
+          <button type="submit" class="admin-btn admin-btn-primary" style="width: auto;">Şifreyi Güncelle</button>
         </div>
       </form>
     </div>
@@ -2550,7 +2626,7 @@
     </div>
   </footer>
 
-  <script src="app.js?v=10.0"></script>
+  <script src="app.js?v=10.1"></script>
   <script>
     // Architectural grid background canvas animation
     const canvas = document.createElement('canvas');

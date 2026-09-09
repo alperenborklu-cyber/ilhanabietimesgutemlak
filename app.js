@@ -124,7 +124,7 @@ function initRouter() {
       const burger = document.querySelector('.burger');
       if (navList && navList.classList.contains('nav-active')) {
         navList.classList.remove('nav-active');
-        burger.classList.remove('toggle');
+        if (burger) burger.classList.remove('toggle');
       }
       
       showPage(targetId, true);
@@ -141,6 +141,27 @@ function initRouter() {
     let targetPage = document.getElementById(pageId);
     if (!targetPage) return;
     
+    // Always close any active modals and release scroll locks
+    if (typeof closeAllModals === 'function') {
+      closeAllModals();
+    } else {
+      if (typeof closeBlogModal === 'function') closeBlogModal();
+      if (typeof closeAdminBlogModal === 'function') closeAdminBlogModal();
+      if (typeof closeAdminPasswordModal === 'function') closeAdminPasswordModal();
+      const pModal = document.getElementById('project-modal');
+      if (pModal) pModal.classList.remove('active');
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+
+    // Close mobile menu if open
+    const navList = document.querySelector('.nav-links');
+    const burger = document.querySelector('.burger');
+    if (navList && navList.classList.contains('nav-active')) {
+      navList.classList.remove('nav-active');
+      if (burger) burger.classList.remove('toggle');
+    }
+
     // If user is already on this page (e.g. clicking logo while on homepage),
     // smooth-scroll to top without touching DOM or unmounting anything
     if (currentPageId === pageId) {
@@ -149,8 +170,14 @@ function initRouter() {
     }
     currentPageId = pageId;
 
-    // Immediately reset scroll position to 0 so the new page renders cleanly at top
-    window.scrollTo(0, 0);
+    // Immediately and reliably reset scroll position to 0
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    } catch (e) {
+      window.scrollTo(0, 0);
+    }
 
     pages.forEach(page => {
       page.style.display = 'none';
@@ -160,6 +187,10 @@ function initRouter() {
     targetPage.style.display = 'block';
     void targetPage.offsetWidth; // Force synchronous reflow
     targetPage.classList.add('fade-in-section');
+
+    // Ensure scrollbar is completely free after page render
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
     
     document.querySelectorAll('.nav-links a').forEach(a => {
       if (a.getAttribute('data-target') === pageId) {
@@ -195,7 +226,18 @@ function initBurgerMenu() {
   
   if (!burger || !navList) return;
   
-  burger.addEventListener('click', () => {
+  function resetBurgerIcon() {
+    burger.classList.remove('toggle');
+    const lines = burger.querySelectorAll('div');
+    if (lines.length >= 3) {
+      lines[0].style.transform = 'none';
+      lines[1].style.opacity = '1';
+      lines[2].style.transform = 'none';
+    }
+  }
+
+  burger.addEventListener('click', (e) => {
+    e.stopPropagation();
     navList.classList.toggle('nav-active');
     burger.classList.toggle('toggle');
     
@@ -205,9 +247,16 @@ function initBurgerMenu() {
       lines[1].style.opacity = '0';
       lines[2].style.transform = 'rotate(45deg) translate(-5px, -6px)';
     } else {
-      lines[0].style.transform = 'none';
-      lines[1].style.opacity = '1';
-      lines[2].style.transform = 'none';
+      resetBurgerIcon();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (navList.classList.contains('nav-active')) {
+      if (!navList.contains(e.target) && !burger.contains(e.target)) {
+        navList.classList.remove('nav-active');
+        resetBurgerIcon();
+      }
     }
   });
 }
@@ -427,6 +476,7 @@ function initModals() {
   function closeModal() {
     modal.classList.remove('active');
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
   }
 }
 
@@ -669,23 +719,37 @@ function initBlog() {
 }
 
 window.openBlogModal = function(postId) {
-  const post = window.blogPostsData.find(p => p.id === postId);
-  if (!post) return;
-  
-  const modal = document.getElementById('blog-reader-modal');
-  if (!modal) return;
-  
-  document.getElementById('bmodal-cat').innerText = post.category;
-  document.getElementById('bmodal-title').innerText = post.title;
-  document.getElementById('bmodal-author').innerText = '👤 ' + (post.author || 'İlhan Kurt');
-  document.getElementById('bmodal-date').innerText = '📅 ' + post.date;
-  document.getElementById('bmodal-readtime').innerText = '⏱ ' + (post.read_time || '5 dk okuma');
-  document.getElementById('bmodal-img').src = post.img || 'images/etimesgut-emlak-logo.webp';
-  document.getElementById('bmodal-img').alt = post.title;
-  document.getElementById('bmodal-body').innerHTML = post.content;
-  
-  modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+  try {
+    const post = window.blogPostsData.find(p => p.id === postId);
+    if (!post) return;
+    
+    const modal = document.getElementById('blog-reader-modal');
+    if (!modal) return;
+    
+    const elCat = document.getElementById('bmodal-cat');
+    const elTitle = document.getElementById('bmodal-title');
+    const elAuthor = document.getElementById('bmodal-author');
+    const elDate = document.getElementById('bmodal-date');
+    const elRead = document.getElementById('bmodal-readtime');
+    const elImg = document.getElementById('bmodal-img');
+    const elBody = document.getElementById('bmodal-body');
+    
+    if (elCat) elCat.innerText = post.category || 'Genel';
+    if (elTitle) elTitle.innerText = post.title || 'Başlıksız';
+    if (elAuthor) elAuthor.innerText = '👤 ' + (post.author || 'İlhan Kurt');
+    if (elDate) elDate.innerText = '📅 ' + (post.date || '');
+    if (elRead) elRead.innerText = '⏱ ' + (post.read_time || '5 dk okuma');
+    if (elImg) {
+      elImg.src = post.img || 'images/etimesgut-emlak-logo.webp';
+      elImg.alt = post.title || 'Blog Görseli';
+    }
+    if (elBody) elBody.innerHTML = post.content || '';
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  } catch (err) {
+    console.error('openBlogModal error:', err);
+  }
 };
 
 window.closeBlogModal = function() {
@@ -697,7 +761,7 @@ window.closeBlogModal = function() {
 };
 
 // ===================================================
-// 13. ADMIN PANEL FUNCTIONS (BLOG YÖNETİMİ)
+// 13. ADMIN PANEL & CONTENT MANAGEMENT SYSTEM
 // ===================================================
 const catNameMap = {
   'rehber': 'Konut Rehberi',
@@ -705,6 +769,29 @@ const catNameMap = {
   'yatirim': 'Yatırım & Piyasa',
   'tapu': 'Hukuk & Tapu'
 };
+
+const ADMIN_PASS_KEY = 'etimesgut_admin_custom_pass';
+
+function getAdminPassword() {
+  return localStorage.getItem(ADMIN_PASS_KEY) || 'etimesgut2026';
+}
+
+function closeAllModals() {
+  if (typeof closeBlogModal === 'function') closeBlogModal();
+  if (typeof closeAdminBlogModal === 'function') closeAdminBlogModal();
+  if (typeof closeAdminPasswordModal === 'function') closeAdminPasswordModal();
+  const pModal = document.getElementById('project-modal');
+  if (pModal) pModal.classList.remove('active');
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
+}
+
+// Global ESC key listener to safely unlock scrolling and close modals
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeAllModals();
+  }
+});
 
 function initAdminPanel() {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
@@ -714,7 +801,8 @@ function initAdminPanel() {
 }
 
 function checkAdminAuth() {
-  const isLogged = sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+  const isLogged = (sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true') || 
+                   (localStorage.getItem(ADMIN_SESSION_KEY) === 'true');
   const loginView = document.getElementById('admin-login-view');
   const dashView = document.getElementById('admin-dashboard-view');
   
@@ -724,6 +812,7 @@ function checkAdminAuth() {
     loginView.style.display = 'none';
     dashView.style.display = 'block';
     renderAdminBlogTable();
+    initPresetGallery();
   } else {
     loginView.style.display = 'block';
     dashView.style.display = 'none';
@@ -735,11 +824,18 @@ function checkAdminAuth() {
 function handleAdminLogin() {
   const user = (document.getElementById('admin-user')?.value || '').trim();
   const pass = (document.getElementById('admin-pass')?.value || '').trim();
+  const remember = document.getElementById('admin-remember')?.checked;
   const alertBox = document.getElementById('admin-login-alert');
   
-  // Varsayılan giriş: admin / etimesgut2026
-  if (user === 'admin' && pass === 'etimesgut2026') {
+  const correctPass = getAdminPassword();
+  
+  if (user === 'admin' && pass === correctPass) {
     sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    if (remember) {
+      localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    } else {
+      localStorage.removeItem(ADMIN_SESSION_KEY);
+    }
     if (alertBox) alertBox.style.display = 'none';
     checkAdminAuth();
   } else {
@@ -752,7 +848,230 @@ function handleAdminLogin() {
 
 function handleAdminLogout() {
   sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  localStorage.removeItem(ADMIN_SESSION_KEY);
   checkAdminAuth();
+}
+
+function openAdminPasswordModal() {
+  const modal = document.getElementById('admin-password-modal');
+  if (modal) {
+    document.getElementById('admin-password-form')?.reset();
+    const alertBox = document.getElementById('admin-pass-alert');
+    if (alertBox) alertBox.style.display = 'none';
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeAdminPasswordModal() {
+  const modal = document.getElementById('admin-password-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+}
+
+function handleAdminChangePassword() {
+  const current = (document.getElementById('admin-current-pass')?.value || '').trim();
+  const newPass = (document.getElementById('admin-new-pass')?.value || '').trim();
+  const confirmPass = (document.getElementById('admin-confirm-pass')?.value || '').trim();
+  const alertBox = document.getElementById('admin-pass-alert');
+  
+  if (current !== getAdminPassword()) {
+    if (alertBox) {
+      alertBox.innerText = 'Mevcut şifreniz hatalı!';
+      alertBox.style.display = 'block';
+    }
+    return;
+  }
+  
+  if (newPass.length < 6) {
+    if (alertBox) {
+      alertBox.innerText = 'Yeni şifre en az 6 karakter olmalıdır!';
+      alertBox.style.display = 'block';
+    }
+    return;
+  }
+  
+  if (newPass !== confirmPass) {
+    if (alertBox) {
+      alertBox.innerText = 'Yeni şifreler birbiriyle uyuşmuyor!';
+      alertBox.style.display = 'block';
+    }
+    return;
+  }
+  
+  localStorage.setItem(ADMIN_PASS_KEY, newPass);
+  closeAdminPasswordModal();
+  alert('Admin şifreniz başarıyla güncellendi!');
+}
+
+// Client-side image compressor via Canvas to prevent LocalStorage quota overflow
+function compressImage(file, maxWidth = 1200, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        let dataUrl = '';
+        try {
+          dataUrl = canvas.toDataURL('image/webp', quality);
+        } catch (err) {
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+        }
+        resolve(dataUrl);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleAdminFileSelect(input) {
+  const file = input?.files?.[0];
+  if (!file) return;
+  
+  const statusEl = document.getElementById('admin-preview-status');
+  if (statusEl) statusEl.innerText = '⏳ Fotoğraf optimize ediliyor...';
+  
+  try {
+    const compressedDataUrl = await compressImage(file, 1200, 0.82);
+    setAdminImgPreview(compressedDataUrl, 'Cihazdan Yüklendi (Optimize Edildi)');
+    const imgInput = document.getElementById('admin-form-img');
+    if (imgInput) imgInput.value = compressedDataUrl;
+  } catch (e) {
+    console.error('Görsel sıkıştırma hatası:', e);
+    alert('Fotoğraf yüklenirken bir hata oluştu. Lütfen geçerli bir görsel dosyası seçin.');
+  }
+}
+
+function setAdminImgPreview(src, label = 'Seçildi') {
+  const previewWrap = document.getElementById('admin-preview-wrap');
+  const previewImg = document.getElementById('admin-img-preview');
+  const statusEl = document.getElementById('admin-preview-status');
+  
+  if (!previewWrap || !previewImg) return;
+  
+  if (src && src.trim()) {
+    previewImg.src = src;
+    if (statusEl) statusEl.innerText = '✅ ' + label;
+    previewWrap.style.display = 'block';
+  } else {
+    previewWrap.style.display = 'none';
+  }
+}
+
+function updateAdminImgFromUrl(url) {
+  if (url && url.trim()) {
+    setAdminImgPreview(url.trim(), 'URL / Dosya Yolu');
+  } else {
+    setAdminImgPreview('');
+  }
+}
+
+function clearAdminImg() {
+  const fileInput = document.getElementById('admin-form-file');
+  const urlInput = document.getElementById('admin-form-img');
+  if (fileInput) fileInput.value = '';
+  if (urlInput) urlInput.value = '';
+  setAdminImgPreview('');
+}
+
+// Preset gallery of existing verified office images
+const officePresetImages = [
+  { path: 'images/etimesgut-ev-alirken-dikkat-edilecekler.webp', title: 'Ev Alırken Dikkat' },
+  { path: 'images/baglica-gayrimenkul-piyasasi-analizi.webp', title: 'Bağlıca Analizi' },
+  { path: 'images/eryaman-ve-goksu-konut-yatirimi.webp', title: 'Eryaman Yatırımı' },
+  { path: 'images/istasyon-mahallesi-baskentray-ulasim.webp', title: 'İstasyon Başkentray' },
+  { path: 'images/ankara-bati-aksi-imar-arsa-rehberi.webp', title: 'Batı Aksı Arsa' },
+  { path: 'images/ev-satisinda-emsal-fiyat-tespiti.webp', title: 'Emsal Fiyat' },
+  { path: 'images/tasinmaz-ticareti-yetki-belgesi.webp', title: 'Yetki Belgesi' },
+  { path: 'images/tapu-devir-surecinde-gerekli-evraklar.webp', title: 'Tapu Evrakları' },
+  { path: 'images/kat-irtifaki-kat-mulkiyeti-farklari.webp', title: 'Kat İrtifakı / Mülkiyeti' },
+  { path: 'images/etimesgut-memur-aile-kiralik-ev.webp', title: 'Kiralık Ev Rehberi' },
+  { path: 'images/alsancak-suvari-ticari-dukkan-yatirimi.webp', title: 'Ticari Dükkân' },
+  { path: 'images/konut-kredisi-ekspertiz-ipotek-sureci.webp', title: 'Konut Kredisi' },
+  { path: 'images/ahi-mesut-elvankent-site-ici-yasam.webp', title: 'Ahi Mesut - Elvankent' },
+  { path: 'images/kentsel-donusum-etimesgut-insaat.webp', title: 'Kentsel Dönüşüm' },
+  { path: 'images/baglica-bulvari-villa-luks-konut.webp', title: 'Bağlıca Villa' },
+  { path: 'images/piyade-kazim-karabekir-konut-rehberi.webp', title: 'Piyade & Kazım Karabekir' },
+  { path: 'images/etimesgut-emlak-logo.webp', title: 'Etimesgut Emlak Ofisi Logo' }
+];
+
+function initPresetGallery() {
+  const container = document.getElementById('admin-preset-gallery');
+  if (!container || container.children.length > 0) return;
+  
+  officePresetImages.forEach(item => {
+    const img = document.createElement('img');
+    img.src = item.path;
+    img.alt = item.title;
+    img.title = item.title;
+    img.className = 'admin-preset-thumb';
+    img.onclick = () => {
+      const urlInput = document.getElementById('admin-form-img');
+      if (urlInput) urlInput.value = item.path;
+      setAdminImgPreview(item.path, item.title);
+      container.style.display = 'none';
+    };
+    container.appendChild(img);
+  });
+}
+
+function togglePresetGallery() {
+  const container = document.getElementById('admin-preset-gallery');
+  if (!container) return;
+  if (container.children.length === 0) initPresetGallery();
+  container.style.display = container.style.display === 'none' ? 'grid' : 'none';
+}
+
+function insertEditorTag(type) {
+  const textarea = document.getElementById('admin-form-content');
+  if (!textarea) return;
+  
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const selected = textarea.value.substring(start, end);
+  let insertText = '';
+  
+  switch(type) {
+    case 'h3':
+      insertText = selected ? `\n<h3>${selected}</h3>\n` : `\n<h3>Yeni Alt Başlık</h3>\n`;
+      break;
+    case 'p':
+      insertText = selected ? `\n<p>${selected}</p>\n` : `\n<p>Paragraf metni buraya gelecek...</p>\n`;
+      break;
+    case 'b':
+      insertText = selected ? `<strong>${selected}</strong>` : `<strong>vurgulu metin</strong>`;
+      break;
+    case 'ul':
+      insertText = `\n<ul>\n  <li>Önemli madde 1</li>\n  <li>Önemli madde 2</li>\n  <li>Önemli madde 3</li>\n</ul>\n`;
+      break;
+    case 'wa':
+      insertText = `\n<div style="margin: 1.5rem 0; text-align: center;"><a href="https://wa.me/905418510600?text=Merhaba,%20bilgi%20almak%20istiyorum." target="_blank" style="background:#25D366;color:#fff;padding:0.75rem 1.5rem;border-radius:6px;font-weight:700;display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;">💬 WhatsApp ile Danışın</a></div>\n`;
+      break;
+    case 'clear':
+      if (confirm('İçeriği tamamen temizlemek istediğinize emin misiniz?')) {
+        textarea.value = '';
+      }
+      return;
+  }
+  
+  textarea.setRangeText(insertText, start, end, 'end');
+  textarea.focus();
 }
 
 function renderAdminBlogTable(filterText = '', categoryFilter = 'all') {
@@ -763,11 +1082,13 @@ function renderAdminBlogTable(filterText = '', categoryFilter = 'all') {
   if (countBadge) countBadge.innerText = `${window.blogPostsData.length} Yazı`;
   tbody.innerHTML = '';
   
-  const q = filterText.toLowerCase();
+  const q = (filterText || '').toLowerCase();
   
   const filtered = window.blogPostsData.filter(post => {
     const matchCat = (categoryFilter === 'all' || post.cat_slug === categoryFilter);
-    const matchQ = (!q || (post.title && post.title.toLowerCase().includes(q)) || (post.excerpt && post.excerpt.toLowerCase().includes(q)));
+    const matchQ = (!q || 
+      (post.title && post.title.toLowerCase().includes(q)) || 
+      (post.excerpt && post.excerpt.toLowerCase().includes(q)));
     return matchCat && matchQ;
   });
   
@@ -780,18 +1101,19 @@ function renderAdminBlogTable(filterText = '', categoryFilter = 'all') {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>
-        <img src="${post.img || 'images/etimesgut-emlak-logo.webp'}" class="admin-td-thumb" alt="${post.title}" onerror="this.src='images/etimesgut-emlak-logo.webp'">
+        <img src="${post.img || 'images/etimesgut-emlak-logo.webp'}" class="admin-td-thumb" alt="${post.title || ''}" onerror="this.src='images/etimesgut-emlak-logo.webp'">
       </td>
       <td>
-        <div class="admin-td-title">${post.title}</div>
+        <div class="admin-td-title">${post.title || 'Başlıksız'}</div>
       </td>
       <td>
-        <span class="admin-badge-cat">${post.category}</span>
+        <span class="admin-badge-cat">${post.category || 'Genel'}</span>
       </td>
-      <td style="font-size: 0.85rem; white-space: nowrap;">${post.date}</td>
+      <td style="font-size: 0.85rem; white-space: nowrap;">${post.date || ''}</td>
       <td style="font-size: 0.85rem; white-space: nowrap;">${post.read_time || '5 dk'}</td>
       <td style="text-align: center;">
         <div class="admin-table-actions" style="justify-content: center;">
+          <button type="button" class="btn-admin-row btn-admin-view" onclick="openBlogModal('${post.id}')" title="Sitede Nasıl Göründüğünü İncele">👁️ Sitede Gör</button>
           <button type="button" class="btn-admin-row btn-admin-edit" onclick="openAdminEditModal('${post.id}')" title="Yazıyı Düzenle">✏️ Düzenle</button>
           <button type="button" class="btn-admin-row btn-admin-del" onclick="deleteAdminBlogPost('${post.id}')" title="Yazıyı Sil">🗑️ Sil</button>
         </div>
@@ -823,6 +1145,9 @@ function openAdminCreateModal() {
   document.getElementById('admin-form-excerpt').value = '';
   document.getElementById('admin-form-content').value = '';
   
+  clearAdminImg();
+  setAdminImgPreview('images/etimesgut-emlak-logo.webp', 'Varsayılan Ofis Görseli');
+  
   const modal = document.getElementById('admin-blog-modal');
   if (modal) {
     modal.style.display = 'flex';
@@ -844,6 +1169,8 @@ function openAdminEditModal(postId) {
   document.getElementById('admin-form-excerpt').value = post.excerpt || '';
   document.getElementById('admin-form-content').value = post.content || '';
   
+  setAdminImgPreview(post.img || 'images/etimesgut-emlak-logo.webp', 'Mevcut Görsel');
+  
   const modal = document.getElementById('admin-blog-modal');
   if (modal) {
     modal.style.display = 'flex';
@@ -860,63 +1187,74 @@ function closeAdminBlogModal() {
 }
 
 function saveAdminBlogPost() {
-  const editId = document.getElementById('admin-form-post-id').value;
-  const title = document.getElementById('admin-form-title').value.trim();
-  const catSlug = document.getElementById('admin-form-cat').value;
-  const category = catNameMap[catSlug] || 'Konut Rehberi';
-  const date = document.getElementById('admin-form-date').value.trim();
-  const read_time = document.getElementById('admin-form-readtime').value.trim();
-  const img = document.getElementById('admin-form-img').value.trim() || 'images/etimesgut-emlak-logo.webp';
-  const excerpt = document.getElementById('admin-form-excerpt').value.trim();
-  let content = document.getElementById('admin-form-content').value.trim();
-  
-  if (!title || !excerpt || !content) {
-    alert('Lütfen tüm zorunlu alanları doldurunuz.');
-    return;
-  }
-  
-  if (!content.includes('<p>') && !content.includes('<h3>')) {
-    content = content.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('\n');
-  }
-  
-  if (editId) {
-    const idx = window.blogPostsData.findIndex(p => p.id === editId);
-    if (idx !== -1) {
-      window.blogPostsData[idx] = {
-        ...window.blogPostsData[idx],
+  try {
+    const editId = document.getElementById('admin-form-post-id').value;
+    const title = (document.getElementById('admin-form-title')?.value || '').trim();
+    const catSlug = document.getElementById('admin-form-cat')?.value || 'rehber';
+    const category = catNameMap[catSlug] || 'Konut Rehberi';
+    const date = (document.getElementById('admin-form-date')?.value || '').trim();
+    const read_time = (document.getElementById('admin-form-readtime')?.value || '5 dk okuma').trim();
+    const img = (document.getElementById('admin-form-img')?.value || '').trim() || 'images/etimesgut-emlak-logo.webp';
+    const excerpt = (document.getElementById('admin-form-excerpt')?.value || '').trim();
+    let content = (document.getElementById('admin-form-content')?.value || '').trim();
+    
+    if (!title || !excerpt || !content) {
+      alert('Lütfen başlık, özet ve içerik alanlarını eksiksiz doldurunuz.');
+      return;
+    }
+    
+    if (!content.includes('<p>') && !content.includes('<h3>')) {
+      content = content.split('\n\n').filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('\n');
+    }
+    
+    if (editId) {
+      const idx = window.blogPostsData.findIndex(p => p.id === editId);
+      if (idx !== -1) {
+        window.blogPostsData[idx] = {
+          ...window.blogPostsData[idx],
+          title,
+          category,
+          cat_slug: catSlug,
+          date,
+          read_time,
+          img,
+          excerpt,
+          content
+        };
+      }
+    } else {
+      const newPost = {
+        id: 'blog-' + Date.now(),
         title,
         category,
         cat_slug: catSlug,
         date,
+        author: 'İlhan Kurt',
         read_time,
         img,
         excerpt,
         content
       };
+      window.blogPostsData.unshift(newPost);
     }
-  } else {
-    const newPost = {
-      id: 'blog-' + Date.now(),
-      title,
-      category,
-      cat_slug: catSlug,
-      date,
-      author: 'İlhan Kurt',
-      read_time,
-      img,
-      excerpt,
-      content
-    };
-    window.blogPostsData.unshift(newPost);
+    
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(window.blogPostsData));
+    } catch (storageErr) {
+      console.warn('LocalStorage kotası aşıldı:', storageErr);
+      alert('Tarayıcı depolama sınırına ulaşıldı. Yüklediğiniz fotoğraf çok yüksek çözünürlüklü olabilir. Lütfen görseli küçülterek tekrar deneyin.');
+      return;
+    }
+    
+    closeAdminBlogModal();
+    renderAdminBlogTable();
+    if (typeof renderBlogGrid === 'function') renderBlogGrid('all');
+    
+    alert(editId ? 'Blog yazısı başarıyla güncellendi!' : 'Yeni blog yazısı başarıyla eklendi!');
+  } catch (err) {
+    console.error('saveAdminBlogPost genel hata:', err);
+    alert('İşlem sırasında bir hata oluştu: ' + err.message);
   }
-  
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(window.blogPostsData));
-  
-  closeAdminBlogModal();
-  renderAdminBlogTable();
-  renderBlogGrid('all');
-  
-  alert(editId ? 'Blog yazısı başarıyla güncellendi!' : 'Yeni blog yazısı başarıyla eklendi!');
 }
 
 function deleteAdminBlogPost(postId) {
@@ -927,10 +1265,14 @@ function deleteAdminBlogPost(postId) {
   if (!ok) return;
   
   window.blogPostsData = window.blogPostsData.filter(p => p.id !== postId);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(window.blogPostsData));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(window.blogPostsData));
+  } catch (e) {
+    console.error('LocalStorage save error on delete:', e);
+  }
   
   renderAdminBlogTable();
-  renderBlogGrid('all');
+  if (typeof renderBlogGrid === 'function') renderBlogGrid('all');
 }
 
 function resetAdminBlogData() {
@@ -942,11 +1284,40 @@ function resetAdminBlogData() {
 }
 
 function exportAdminBlogData() {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.blogPostsData, null, 2));
-  const dlAnchor = document.createElement('a');
-  dlAnchor.setAttribute("href", dataStr);
-  dlAnchor.setAttribute("download", `etimesgut_emlak_blog_yedek_${Date.now()}.json`);
-  document.body.appendChild(dlAnchor);
-  dlAnchor.click();
-  dlAnchor.remove();
+  try {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.blogPostsData, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `etimesgut_emlak_blog_yedek_${Date.now()}.json`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+  } catch (e) {
+    alert('Yedek indirilirken bir hata oluştu: ' + e.message);
+  }
 }
+
+// Global scope window bindings to guarantee no ReferenceError occurs
+window.closeAllModals = closeAllModals;
+window.initAdminPanel = initAdminPanel;
+window.checkAdminAuth = checkAdminAuth;
+window.handleAdminLogin = handleAdminLogin;
+window.handleAdminLogout = handleAdminLogout;
+window.openAdminPasswordModal = openAdminPasswordModal;
+window.closeAdminPasswordModal = closeAdminPasswordModal;
+window.handleAdminChangePassword = handleAdminChangePassword;
+window.handleAdminFileSelect = handleAdminFileSelect;
+window.updateAdminImgFromUrl = updateAdminImgFromUrl;
+window.clearAdminImg = clearAdminImg;
+window.togglePresetGallery = togglePresetGallery;
+window.insertEditorTag = insertEditorTag;
+window.renderAdminBlogTable = renderAdminBlogTable;
+window.filterAdminBlogTable = filterAdminBlogTable;
+window.openAdminCreateModal = openAdminCreateModal;
+window.openAdminEditModal = openAdminEditModal;
+window.closeAdminBlogModal = closeAdminBlogModal;
+window.saveAdminBlogPost = saveAdminBlogPost;
+window.deleteAdminBlogPost = deleteAdminBlogPost;
+window.resetAdminBlogData = resetAdminBlogData;
+window.exportAdminBlogData = exportAdminBlogData;
+

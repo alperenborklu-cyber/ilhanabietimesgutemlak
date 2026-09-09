@@ -212,7 +212,7 @@
       </ul>
       <div class="header-right">
         <a href="https://wa.me/905418510600?text=Merhaba,%20web%20sitenizden%20ulasıyorum.%20Gayrimenkul%20hakkinda%20bilgi%20almak%20istiyorum." target="_blank" class="header-cta-btn" title="Hemen WhatsApp ile Yazın">
-          <span>💬</span> 0541 851 06 00
+          <span>💬</span><span class="cta-btn-text"> 0541 851 06 00</span>
         </a>
         <div class="lang-selector" id="lang-switch">EN</div>
         <div class="burger">
@@ -2189,7 +2189,165 @@
 
     </section>
 
+    <!-- ==================== ADMIN PANELİ (BLOG YÖNETİMİ) ==================== -->
+    <section id="admin" class="page-view fade-in-section admin-section" style="display: none;">
+      <div class="section-container">
+
+        <!-- A. ADMIN LOGIN VIEW -->
+        <div id="admin-login-view">
+          <div class="admin-login-box">
+            <div class="admin-login-icon">🔐</div>
+            <h2 class="admin-login-title">Yönetici Girişi</h2>
+            <p class="admin-login-desc">Etimesgut Emlak Ofisi – Blog & İçerik Yönetim Paneli</p>
+            
+            <div id="admin-login-alert" class="admin-alert admin-alert-error">
+              Kullanıcı adı veya şifre hatalı!
+            </div>
+
+            <form id="admin-login-form" onsubmit="event.preventDefault(); handleAdminLogin();">
+              <div class="admin-form-group">
+                <label for="admin-user">Kullanıcı Adı</label>
+                <input type="text" id="admin-user" class="admin-input" placeholder="admin" required autocomplete="username">
+              </div>
+              <div class="admin-form-group">
+                <label for="admin-pass">Şifre</label>
+                <input type="password" id="admin-pass" class="admin-input" placeholder="••••••••" required autocomplete="current-password">
+              </div>
+              <button type="submit" class="admin-btn admin-btn-primary">
+                <span>Giriş Yap</span> ➔
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- B. ADMIN DASHBOARD VIEW -->
+        <div id="admin-dashboard-view" class="admin-dashboard">
+          <!-- Topbar -->
+          <div class="admin-dashboard-header">
+            <div class="admin-dashboard-title-grp">
+              <h2>
+                <span>✍️ Blog Yönetim Paneli</span>
+                <span class="admin-post-count-badge" id="admin-post-count">0 Yazı</span>
+              </h2>
+            </div>
+            <div class="admin-dashboard-actions">
+              <button type="button" class="admin-btn admin-btn-action admin-btn-add" onclick="openAdminCreateModal()">
+                <span>➕ Yeni Blog Yazısı Ekle</span>
+              </button>
+              <button type="button" class="admin-btn admin-btn-action admin-btn-backup" onclick="exportAdminBlogData()" title="Blog verilerini JSON olarak bilgisayarınıza indirin">
+                <span>📥 JSON Yedek Al</span>
+              </button>
+              <button type="button" class="admin-btn admin-btn-action admin-btn-reset" onclick="resetAdminBlogData()" title="Varsayılan 30 blog yazısına geri döndür">
+                <span>🔄 Sıfırla</span>
+              </button>
+              <button type="button" class="admin-btn admin-btn-action admin-btn-logout" onclick="handleAdminLogout()">
+                <span>🚪 Çıkış</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Toolbar (Arama ve Filtre) -->
+          <div class="admin-toolbar">
+            <div class="admin-search-wrapper">
+              <input type="text" id="admin-search-input" class="admin-input" placeholder="Blog başlığında veya içerikte ara..." oninput="filterAdminBlogTable()">
+            </div>
+            <div class="admin-cat-filter-wrapper">
+              <select id="admin-cat-filter" class="admin-input" onchange="filterAdminBlogTable()">
+                <option value="all">Tüm Kategoriler</option>
+                <option value="rehber">Konut Rehberi</option>
+                <option value="bolge">Bölge Analizi</option>
+                <option value="yatirim">Yatırım & Piyasa</option>
+                <option value="tapu">Hukuk & Tapu</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Blog Tablosu -->
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Görsel</th>
+                  <th>Başlık</th>
+                  <th>Kategori</th>
+                  <th>Tarih</th>
+                  <th>Okuma</th>
+                  <th style="width: 140px; text-align: center;">İşlemler</th>
+                </tr>
+              </thead>
+              <tbody id="admin-blog-tbody">
+                <!-- Dinamik satırlar -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
+
+  <!-- ADMIN BLOG CREATE / EDIT MODAL -->
+  <div id="admin-blog-modal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeAdminBlogModal()"></div>
+    <div class="modal-container admin-modal-container">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title" id="admin-modal-heading">Yeni Blog Yazısı Ekle</h3>
+        <button class="modal-close" onclick="closeAdminBlogModal()" aria-label="Kapat">&times;</button>
+      </div>
+      <form id="admin-blog-form" onsubmit="event.preventDefault(); saveAdminBlogPost();">
+        <input type="hidden" id="admin-form-post-id" value="">
+        
+        <div class="admin-form-group">
+          <label for="admin-form-title">Blog Başlığı *</label>
+          <input type="text" id="admin-form-title" class="admin-input" placeholder="Örn: Etimesgut'ta Ev Alırken Dikkat Edilecekler" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div class="admin-form-group">
+            <label for="admin-form-cat">Kategori *</label>
+            <select id="admin-form-cat" class="admin-input" required>
+              <option value="rehber">Konut Rehberi</option>
+              <option value="bolge">Bölge Analizi</option>
+              <option value="yatirim">Yatırım & Piyasa</option>
+              <option value="tapu">Hukuk & Tapu</option>
+            </select>
+          </div>
+          <div class="admin-form-group">
+            <label for="admin-form-date">Yayın Tarihi *</label>
+            <input type="text" id="admin-form-date" class="admin-input" placeholder="Örn: 9 Eylül 2026" required>
+          </div>
+          <div class="admin-form-group">
+            <label for="admin-form-readtime">Okuma Süresi</label>
+            <input type="text" id="admin-form-readtime" class="admin-input" placeholder="Örn: 5 dk okuma" value="5 dk okuma">
+          </div>
+        </div>
+
+        <div class="admin-form-group">
+          <label for="admin-form-img">Kapak Görseli URL veya Dosya Yolu *</label>
+          <input type="text" id="admin-form-img" class="admin-input" placeholder="images/etimesgut-ev-alirken-dikkat-edilecekler.webp veya https://..." required>
+        </div>
+
+        <div class="admin-form-group">
+          <label for="admin-form-excerpt">Kısa Özet (Kart Açıklaması) *</label>
+          <textarea id="admin-form-excerpt" class="admin-input" rows="3" placeholder="Blog listesinde görünecek 2-3 cümlelik kısa özet..." required></textarea>
+        </div>
+
+        <div class="admin-form-group">
+          <label for="admin-form-content">Detaylı Makale İçeriği (HTML / Paragraflar) *</label>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+            Başlıklar için <code>&lt;h3&gt;Başlık&lt;/h3&gt;</code>, paragraflar için <code>&lt;p&gt;Metin&lt;/p&gt;</code>, listeler için <code>&lt;ul&gt;&lt;li&gt;Madde&lt;/li&gt;&lt;/ul&gt;</code> kullanabilirsiniz.
+          </p>
+          <textarea id="admin-form-content" class="admin-input" rows="9" placeholder="<p>Giriş paragrafı...</p><h3>1. Alt Başlık</h3><p>Detaylı açıklama...</p>" required></textarea>
+        </div>
+
+        <div class="admin-modal-footer">
+          <button type="button" class="admin-btn admin-btn-backup" onclick="closeAdminBlogModal()">Vazgeç</button>
+          <button type="submit" class="admin-btn admin-btn-primary" style="width: auto;">💾 Değişiklikleri Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- 4. REAL ESTATE DETAIL MODAL -->
   <div id="project-modal" class="modal">
@@ -2386,12 +2544,13 @@
           <a href="/gizlilik-politikasi" data-target="privacy-policy">Gizlilik Politikası</a>
           <a href="/kvkk-aydinlatma-metni" data-target="kvkk-text">KVKK Aydınlatma Metni</a>
           <a href="/kullanim-sartlari" data-target="terms-of-service">Kullanım Şartları</a>
+          <a href="/admin" data-target="admin" style="opacity: 0.6; font-size: 0.8rem;" title="Blog Yönetim Paneli">Yönetim</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <script src="app.js?v=9.0"></script>
+  <script src="app.js?v=10.0"></script>
   <script>
     // Architectural grid background canvas animation
     const canvas = document.createElement('canvas');

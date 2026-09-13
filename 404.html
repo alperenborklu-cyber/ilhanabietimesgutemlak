@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang=tr>
+<head>
+  <meta charset=UTF-8>
+  <meta name=viewport content=width=device-width, initial-scale=1.0>
+  <title>Etimesgut Emlak Ofisi – Sayfa Yükleniyor...</title>
+  <link rel=icon type=image/png href=etimesgut-emlak-logo.png>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #040810;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 1.5rem;
+    }
+    .card {
+      background: #0a1120;
+      border: 1px solid rgba(197, 168, 128, 0.3);
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      max-width: 460px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(197, 168, 128, 0.2);
+      border-top-color: #c5a880;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.5rem auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h1 { color: #c5a880; font-size: 1.4rem; margin-bottom: 0.75rem; }
+    p { color: #94a3b8; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; }
+    a {
+      display: inline-block;
+      background: #c5a880;
+      color: #040810;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+  </style>
+  <script>
+    // SPA Universal 404 Recovery:
+    // Captures path and directs cleanly to index.html with pathname preserved
+    (function() {
+      var path = window.location.pathname;
+      var search = window.location.search || '';
+      var hash = window.location.hash || '';
+      
+      // Known SPA paths
+      var validRoutes = [
+        '/', '/hakkimizda', '/kurumsal', '/hizmetlerimiz',
+        '/portfoy', '/ilanlar', '/musteri-yorumlari', '/yorumlar',
+        '/blog', '/iletisim', '/gizlilik-politikasi',
+        '/kvkk-aydinlatma-metni', '/kvkk', '/kullanim-sartlari', '/admin'
+      ];
+      
+      var cleanPath = path.replace(/\/$/, '') || '/';
+      
+      // Session storage transfer or URL redirect
+      try {
+        sessionStorage.setItem('spa_redirect_path', cleanPath + search + hash);
+      } catch (e) {}
+      
+      // Immediate redirection to index.html with path preserved in hash or parameter
+      window.location.replace('/#' + cleanPath + search + hash);
+    })();
+  </script>
+</head>
+<body>
+  <div class=card>
+    <div class=spinner></div>
+    <h1>Etimesgut Emlak Ofisi</h1>
+    <p>İstediğiniz sayfa yükleniyor, lütfen bekleyiniz...</p>
+    <a href=/>Anasayfaya Dön</a>
+  </div>
+</body>
+</html>

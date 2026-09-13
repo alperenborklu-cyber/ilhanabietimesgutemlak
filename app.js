@@ -76,16 +76,47 @@ const pageToPath = {
   'admin': '/admin'
 };
 
+// 2. SCROLL LOCKING UTILITY (Rock-solid across mobile Safari, Chrome, and desktop)
+function lockScroll() {
+  document.body.classList.add('modal-open');
+  document.documentElement.classList.add('modal-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function unlockScroll() {
+  document.body.classList.remove('modal-open');
+  document.documentElement.classList.remove('modal-open');
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
+}
+window.lockScroll = lockScroll;
+window.unlockScroll = unlockScroll;
+
 function initRouter() {
   const pages = document.querySelectorAll('.page-view');
   let currentPageId = null;
   
-  // Clean any hash from URL bar immediately on startup
-  const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
-  if (window.location.hash) {
-    history.replaceState(null, '', currentPath);
+  // 1. Check for 404 fallback hash or sessionStorage redirect
+  let currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+  if (window.location.hash && window.location.hash.startsWith('#/')) {
+    const hashRoute = window.location.hash.slice(1).split('?')[0].replace(/\/$/, '') || '/';
+    if (routeMap[hashRoute]) {
+      currentPath = hashRoute;
+      try { history.replaceState(null, '', hashRoute); } catch(e) {}
+    }
   }
-  
+  try {
+    const savedRedirect = sessionStorage.getItem('spa_redirect_path');
+    if (savedRedirect) {
+      sessionStorage.removeItem('spa_redirect_path');
+      const savedTarget = savedRedirect.split('?')[0].split('#')[0].replace(/\/$/, '') || '/';
+      if (routeMap[savedTarget]) {
+        currentPath = savedTarget;
+        try { history.replaceState(null, '', savedTarget); } catch(e) {}
+      }
+    }
+  } catch(e) {}
+
   const initialPage = routeMap[currentPath] || 'home';
   showPage(initialPage, false);
 
@@ -121,10 +152,9 @@ function initRouter() {
       
       // Close mobile menu if open
       const navList = document.querySelector('.nav-links');
-      const burger = document.querySelector('.burger');
       if (navList && navList.classList.contains('nav-active')) {
         navList.classList.remove('nav-active');
-        if (burger) burger.classList.remove('toggle');
+        if (typeof window.resetBurgerIcon === 'function') window.resetBurgerIcon();
       }
       
       showPage(targetId, true);
@@ -132,6 +162,13 @@ function initRouter() {
   });
   
   window.addEventListener('popstate', (e) => {
+    // If a modal is open, back button closes the modal without leaving page
+    const activeModal = document.querySelector('.modal.active') || 
+                        (document.getElementById('blog-reader-modal') && document.getElementById('blog-reader-modal').style.display === 'flex' ? document.getElementById('blog-reader-modal') : null);
+    if (activeModal) {
+      closeAllModals();
+      return;
+    }
     const popPath = window.location.pathname.replace(/\/$/, '') || '/';
     const pageId = routeMap[popPath] || 'home';
     showPage(pageId, false);
@@ -142,24 +179,14 @@ function initRouter() {
     if (!targetPage) return;
     
     // Always close any active modals and release scroll locks
-    if (typeof closeAllModals === 'function') {
-      closeAllModals();
-    } else {
-      if (typeof closeBlogModal === 'function') closeBlogModal();
-      if (typeof closeAdminBlogModal === 'function') closeAdminBlogModal();
-      if (typeof closeAdminPasswordModal === 'function') closeAdminPasswordModal();
-      const pModal = document.getElementById('project-modal');
-      if (pModal) pModal.classList.remove('active');
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-    }
+    closeAllModals();
+    unlockScroll();
 
     // Close mobile menu if open
     const navList = document.querySelector('.nav-links');
-    const burger = document.querySelector('.burger');
     if (navList && navList.classList.contains('nav-active')) {
       navList.classList.remove('nav-active');
-      if (burger) burger.classList.remove('toggle');
+      if (typeof window.resetBurgerIcon === 'function') window.resetBurgerIcon();
     }
 
     // If user is already on this page (e.g. clicking logo while on homepage),
@@ -170,7 +197,9 @@ function initRouter() {
     }
     currentPageId = pageId;
 
-    // Immediately and reliably reset scroll position to 0
+    // Temporarily disable smooth scroll during page transition to prevent mobile scroll fighting
+    const prevScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     try {
@@ -178,6 +207,9 @@ function initRouter() {
     } catch (e) {
       window.scrollTo(0, 0);
     }
+    setTimeout(() => {
+      document.documentElement.style.scrollBehavior = prevScrollBehavior || '';
+    }, 60);
 
     pages.forEach(page => {
       page.style.display = 'none';
@@ -189,8 +221,7 @@ function initRouter() {
     targetPage.classList.add('fade-in-section');
 
     // Ensure scrollbar is completely free after page render
-    document.body.style.overflow = '';
-    document.documentElement.style.overflow = '';
+    unlockScroll();
     
     document.querySelectorAll('.nav-links a').forEach(a => {
       if (a.getAttribute('data-target') === pageId) {
@@ -235,6 +266,7 @@ function initBurgerMenu() {
       lines[2].style.transform = 'none';
     }
   }
+  window.resetBurgerIcon = resetBurgerIcon;
 
   burger.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -464,8 +496,9 @@ function initModals() {
           btnCall.href = `tel:${brokerNumber}`;
         }
         
+        modal.style.display = 'flex';
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        lockScroll();
       }
     });
   });
@@ -475,8 +508,8 @@ function initModals() {
   
   function closeModal() {
     modal.classList.remove('active');
-    document.body.style.overflow = '';
-    document.documentElement.style.overflow = '';
+    modal.style.display = 'none';
+    unlockScroll();
   }
 }
 
@@ -674,6 +707,7 @@ function renderBlogGrid(activeFilter = 'all') {
     card.setAttribute('data-category', post.cat_slug);
     card.setAttribute('data-id', post.id);
     card.style.display = isVisible ? 'flex' : 'none';
+    card.style.cursor = 'pointer';
     
     card.innerHTML = `
       <div class="blog-card-img">
@@ -692,12 +726,20 @@ function renderBlogGrid(activeFilter = 'all') {
             <span class="author-avatar-badge">👤</span>
             <span class="author-name">${post.author || 'İlhan Kurt'}</span>
           </div>
-          <button type="button" class="btn-blog-read" onclick="openBlogModal('${post.id}')">
+          <button type="button" class="btn-blog-read" onclick="event.stopPropagation(); openBlogModal('${post.id}')">
             Yazıyı Oku ➔
           </button>
         </div>
       </div>
     `;
+
+    // Click anywhere on card opens the blog post modal
+    card.addEventListener('click', (e) => {
+      if (!e.target.closest('a')) {
+        openBlogModal(post.id);
+      }
+    });
+
     grid.appendChild(card);
   });
 }
@@ -745,8 +787,18 @@ window.openBlogModal = function(postId) {
     }
     if (elBody) elBody.innerHTML = post.content || '';
     
+    // Reset modal scroll position to top
+    const mContainer = modal.querySelector('.modal-container');
+    if (mContainer) mContainer.scrollTop = 0;
+
     modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    modal.classList.add('active');
+    lockScroll();
+
+    // Push modal state to history so device Back button cleanly closes modal
+    if (!history.state || !history.state.modalOpen) {
+      history.pushState({ ...(history.state || {}), modalOpen: true }, '');
+    }
   } catch (err) {
     console.error('openBlogModal error:', err);
   }
@@ -755,9 +807,10 @@ window.openBlogModal = function(postId) {
 window.closeBlogModal = function() {
   const modal = document.getElementById('blog-reader-modal');
   if (modal) {
+    modal.classList.remove('active');
     modal.style.display = 'none';
-    document.body.style.overflow = '';
   }
+  unlockScroll();
 };
 
 // ===================================================
@@ -777,13 +830,12 @@ function getAdminPassword() {
 }
 
 function closeAllModals() {
-  if (typeof closeBlogModal === 'function') closeBlogModal();
-  if (typeof closeAdminBlogModal === 'function') closeAdminBlogModal();
-  if (typeof closeAdminPasswordModal === 'function') closeAdminPasswordModal();
-  const pModal = document.getElementById('project-modal');
-  if (pModal) pModal.classList.remove('active');
-  document.body.style.overflow = '';
-  document.documentElement.style.overflow = '';
+  const modals = document.querySelectorAll('.modal');
+  modals.forEach(m => {
+    m.classList.remove('active');
+    m.style.display = 'none';
+  });
+  unlockScroll();
 }
 
 // Global ESC key listener to safely unlock scrolling and close modals
@@ -859,16 +911,18 @@ function openAdminPasswordModal() {
     const alertBox = document.getElementById('admin-pass-alert');
     if (alertBox) alertBox.style.display = 'none';
     modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    modal.classList.add('active');
+    lockScroll();
   }
 }
 
 function closeAdminPasswordModal() {
   const modal = document.getElementById('admin-password-modal');
   if (modal) {
+    modal.classList.remove('active');
     modal.style.display = 'none';
-    document.body.style.overflow = '';
   }
+  unlockScroll();
 }
 
 function handleAdminChangePassword() {
@@ -1151,7 +1205,8 @@ function openAdminCreateModal() {
   const modal = document.getElementById('admin-blog-modal');
   if (modal) {
     modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    modal.classList.add('active');
+    lockScroll();
   }
 }
 
@@ -1174,16 +1229,18 @@ function openAdminEditModal(postId) {
   const modal = document.getElementById('admin-blog-modal');
   if (modal) {
     modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    modal.classList.add('active');
+    lockScroll();
   }
 }
 
 function closeAdminBlogModal() {
   const modal = document.getElementById('admin-blog-modal');
   if (modal) {
+    modal.classList.remove('active');
     modal.style.display = 'none';
-    document.body.style.overflow = '';
   }
+  unlockScroll();
 }
 
 function saveAdminBlogPost() {

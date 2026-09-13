@@ -10,7 +10,7 @@
       "destination": "/robots.txt"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!images/|.*\\.(?:webp|mp4|png|jpg|jpeg|svg|ico|woff|woff2|css|js|xml|txt|json)).*)",
       "destination": "/index.html"
     }
   ],
